@@ -1,5 +1,4 @@
-
-![amiga-1000](https://github.com/user-attachments/assets/a38fb152-6448-4cb9-b523-ea32b6e187ce)
+![amiga-banner](https://github.com/user-attachments/assets/da1fbc94-1457-465a-9537-b3a20770af9b)
 
 # A1000-Sandbox
  A1000 Sandbox environment
