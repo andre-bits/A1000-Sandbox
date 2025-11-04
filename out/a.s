@@ -17,14 +17,14 @@ __attribute__((used)) __attribute__((section(".text.unlikely"))) void _start() {
 	unsigned long i;
 
 	count = __preinit_array_end - __preinit_array_start;
-   4:	       move.l #9644,d3
-   a:	       subi.l #9644,d3
+   4:	       move.l #9629,d3
+   a:	       subi.l #9629,d3
   10:	       asr.l #2,d3
 	for (i = 0; i < count; i++)
-  12:	       move.l #9644,d0
-  18:	       cmpi.l #9644,d0
+  12:	       move.l #9629,d0
+  18:	       cmpi.l #9629,d0
   1e:	,----- beq.s 32 <_start+0x32>
-  20:	|      lea 25ac <IntuitionBase>,a2
+  20:	|      lea 259d <_edata>,a2
   26:	|      moveq #0,d2
 		__preinit_array_start[i]();
   28:	|  ,-> movea.l (a2)+,a0
@@ -35,14 +35,14 @@ __attribute__((used)) __attribute__((section(".text.unlikely"))) void _start() {
   30:	|  '-- bcs.s 28 <_start+0x28>
 
 	count = __init_array_end - __init_array_start;
-  32:	'----> move.l #9644,d3
-  38:	       subi.l #9644,d3
+  32:	'----> move.l #9629,d3
+  38:	       subi.l #9629,d3
   3e:	       asr.l #2,d3
 	for (i = 0; i < count; i++)
-  40:	       move.l #9644,d0
-  46:	       cmpi.l #9644,d0
+  40:	       move.l #9629,d0
+  46:	       cmpi.l #9629,d0
   4c:	,----- beq.s 60 <_start+0x60>
-  4e:	|      lea 25ac <IntuitionBase>,a2
+  4e:	|      lea 259d <_edata>,a2
   54:	|      moveq #0,d2
 		__init_array_start[i]();
   56:	|  ,-> movea.l (a2)+,a0
@@ -57,12 +57,12 @@ __attribute__((used)) __attribute__((section(".text.unlikely"))) void _start() {
 
 	// call dtors
 	count = __fini_array_end - __fini_array_start;
-  66:	       move.l #9644,d2
-  6c:	       subi.l #9644,d2
+  66:	       move.l #9629,d2
+  6c:	       subi.l #9629,d2
   72:	       asr.l #2,d2
 	for (i = count; i > 0; i--)
   74:	,----- beq.s 86 <_start+0x86>
-  76:	|      lea 25ac <IntuitionBase>,a2
+  76:	|      lea 259d <_edata>,a2
 		__fini_array_start[i - 1]();
   7c:	|  ,-> subq.l #1,d2
   7e:	|  |   movea.l -(a2),a0
@@ -83,26 +83,26 @@ __attribute__((used)) __attribute__((section(".text.unlikely"))) void _start() {
 int main() {
   8c:	                                  lea -48(sp),sp
   90:	                                  movem.l d2-d3/a2-a4/a6,-(sp)
-	SysBase = *((struct ExecBase**)4UL);
+	SysBase = *(struct ExecBase**)4;
   94:	                                  movea.l 4 <_start+0x4>,a6
-  98:	                                  move.l a6,25b4 <SysBase>
+  98:	                                  move.l a6,25a6 <SysBase>
 
 	// Open required libraries
 	DOSBase = (struct DosLibrary*)OpenLibrary((CONST_STRPTR)"dos.library", 0);
   9e:	                                  lea 560 <DrawWindowText+0x228>,a1
   a4:	                                  moveq #0,d0
   a6:	                                  jsr -552(a6)
-  aa:	                                  move.l d0,25b0 <DOSBase>
+  aa:	                                  move.l d0,25a2 <DOSBase>
 	if (!DOSBase)
   b0:	      ,-------------------------- beq.w 312 <main+0x286>
 		Exit(0);
 
 	IntuitionBase = (struct IntuitionBase*)OpenLibrary((CONST_STRPTR)"intuition.library", 0);
-  b4:	      |                           movea.l 25b4 <SysBase>,a6
+  b4:	      |                           movea.l 25a6 <SysBase>,a6
   ba:	      |                           lea 56c <DrawWindowText+0x234>,a1
   c0:	      |                           moveq #0,d0
   c2:	      |                           jsr -552(a6)
-  c6:	      |                           move.l d0,25ac <IntuitionBase>
+  c6:	      |                           move.l d0,259e <IntuitionBase>
 	if (!IntuitionBase) {
   cc:	,-----|-------------------------- beq.w 2d8 <main+0x24c>
 		CloseLibrary((struct Library*)DOSBase);
@@ -110,11 +110,11 @@ int main() {
 	}
 
 	GfxBase = (struct GfxBase*)OpenLibrary((CONST_STRPTR)"graphics.library", 0);
-  d0:	|  ,--|-------------------------> movea.l 25b4 <SysBase>,a6
+  d0:	|  ,--|-------------------------> movea.l 25a6 <SysBase>,a6
   d6:	|  |  |                           lea 57e <DrawWindowText+0x246>,a1
   dc:	|  |  |                           moveq #0,d0
   de:	|  |  |                           jsr -552(a6)
-  e2:	|  |  |                           move.l d0,25b8 <GfxBase>
+  e2:	|  |  |                           move.l d0,25aa <GfxBase>
 	if (!GfxBase) {
   e8:	|  |  |  ,----------------------- beq.w 2a8 <main+0x21c>
 	nw.LeftEdge = 50;
@@ -135,7 +135,7 @@ int main() {
  11a:	|  |  |  |  |                     clr.l 42(sp)
 	nw.CheckMark = NULL;
  11e:	|  |  |  |  |                     clr.l 46(sp)
-	nw.Title = (UBYTE *)"*** AMIGA WORKBENCH TEST ***";
+	nw.Title = (UBYTE *)"AMIGA SANDBOX";
  122:	|  |  |  |  |                     move.l #1423,50(sp)
 	nw.Screen = NULL;  // Use default Workbench screen
  12a:	|  |  |  |  |                     clr.l 54(sp)
@@ -152,7 +152,7 @@ int main() {
 	nw.Type = WBENCHSCREEN;
  14a:	|  |  |  |  |                     move.w #1,70(sp)
 	window = OpenWindow(&nw);
- 150:	|  |  |  |  |                     movea.l 25ac <IntuitionBase>,a6
+ 150:	|  |  |  |  |                     movea.l 259e <IntuitionBase>,a6
  156:	|  |  |  |  |                     lea 24(sp),a0
  15a:	|  |  |  |  |                     jsr -204(a6)
  15e:	|  |  |  |  |                     movea.l d0,a3
@@ -169,13 +169,13 @@ int main() {
  174:	|  |  |  |  |        |     ,----> movea.l 86(a3),a0
  178:	|  |  |  |  |        |     |      moveq #0,d0
  17a:	|  |  |  |  |        |     |      move.b 15(a0),d0
- 17e:	|  |  |  |  |        |     |      movea.l 25b4 <SysBase>,a6
+ 17e:	|  |  |  |  |        |     |      movea.l 25a6 <SysBase>,a6
  184:	|  |  |  |  |        |     |      move.l d2,d1
  186:	|  |  |  |  |        |     |      lsl.l d0,d1
  188:	|  |  |  |  |        |     |      move.l d1,d0
  18a:	|  |  |  |  |        |     |      jsr -318(a6)
 		while ((message = (struct IntuiMessage *)GetMsg(window->UserPort))) {
- 18e:	|  |  |  |  |        |     |      movea.l 25b4 <SysBase>,a6
+ 18e:	|  |  |  |  |        |     |      movea.l 25a6 <SysBase>,a6
  194:	|  |  |  |  |        |     |      movea.l 86(a3),a0
  198:	|  |  |  |  |        |     |      jsr -372(a6)
  19c:	|  |  |  |  |        |     |      movea.l d0,a2
@@ -191,25 +191,25 @@ int main() {
  1bc:	|  |  |  |  |  |  |  |  |  |      subq.l #4,d1
  1be:	|  |  |  |  |  |  |  |  |  |  ,-- bne.s 1e0 <main+0x154>
 					BeginRefresh(window);
- 1c0:	|  |  |  |  |  |  |  |  |  |  |   movea.l 25ac <IntuitionBase>,a6
+ 1c0:	|  |  |  |  |  |  |  |  |  |  |   movea.l 259e <IntuitionBase>,a6
  1c6:	|  |  |  |  |  |  |  |  |  |  |   movea.l a3,a0
  1c8:	|  |  |  |  |  |  |  |  |  |  |   jsr -354(a6)
 					DrawWindowText(window);
  1cc:	|  |  |  |  |  |  |  |  |  |  |   move.l a3,-(sp)
  1ce:	|  |  |  |  |  |  |  |  |  |  |   jsr (a4)
 					EndRefresh(window, TRUE);
- 1d0:	|  |  |  |  |  |  |  |  |  |  |   movea.l 25ac <IntuitionBase>,a6
+ 1d0:	|  |  |  |  |  |  |  |  |  |  |   movea.l 259e <IntuitionBase>,a6
  1d6:	|  |  |  |  |  |  |  |  |  |  |   movea.l a3,a0
  1d8:	|  |  |  |  |  |  |  |  |  |  |   moveq #1,d0
  1da:	|  |  |  |  |  |  |  |  |  |  |   jsr -366(a6)
 					break;
  1de:	|  |  |  |  |  |  |  |  |  |  |   addq.l #4,sp
 			ReplyMsg((struct Message *)message);
- 1e0:	|  |  |  |  |  |  |  |  |  |  '-> movea.l 25b4 <SysBase>,a6
+ 1e0:	|  |  |  |  |  |  |  |  |  |  '-> movea.l 25a6 <SysBase>,a6
  1e6:	|  |  |  |  |  |  |  |  |  |      movea.l a2,a1
  1e8:	|  |  |  |  |  |  |  |  |  |      jsr -378(a6)
 		while ((message = (struct IntuiMessage *)GetMsg(window->UserPort))) {
- 1ec:	|  |  |  |  |  |  |  |  |  |      movea.l 25b4 <SysBase>,a6
+ 1ec:	|  |  |  |  |  |  |  |  |  |      movea.l 25a6 <SysBase>,a6
  1f2:	|  |  |  |  |  |  |  |  |  |      movea.l 86(a3),a0
  1f6:	|  |  |  |  |  |  |  |  |  |      jsr -372(a6)
  1fa:	|  |  |  |  |  |  |  |  |  |      movea.l d0,a2
@@ -219,7 +219,7 @@ int main() {
  200:	|  |  |  |  |  |  |  |  |  |  ,-> tst.w d3
  202:	|  |  |  |  |  |  |  |  |  '--|-- beq.w 174 <main+0xe8>
 	CloseWindow(window);
- 206:	|  |  |  |  |  |  |  |  |     |   movea.l 25ac <IntuitionBase>,a6
+ 206:	|  |  |  |  |  |  |  |  |     |   movea.l 259e <IntuitionBase>,a6
  20c:	|  |  |  |  |  |  |  |  |     |   movea.l a3,a0
  20e:	|  |  |  |  |  |  |  |  |     |   jsr -72(a6)
 	// 	Write(Output(), (APTR)"This program was started from CLI/Shell.\n", 41);
@@ -228,16 +228,16 @@ int main() {
 
 	// Clean up libraries
 	CloseLibrary((struct Library*)GfxBase);
- 212:	|  |  |  |  |  |  |  '--|-----|-> movea.l 25b4 <SysBase>,a6
- 218:	|  |  |  |  |  |  |     |     |   movea.l 25b8 <GfxBase>,a1
+ 212:	|  |  |  |  |  |  |  '--|-----|-> movea.l 25a6 <SysBase>,a6
+ 218:	|  |  |  |  |  |  |     |     |   movea.l 25aa <GfxBase>,a1
  21e:	|  |  |  |  |  |  |     |     |   jsr -414(a6)
 	CloseLibrary((struct Library*)IntuitionBase);
- 222:	|  |  |  |  |  |  |     |     |   movea.l 25b4 <SysBase>,a6
- 228:	|  |  |  |  |  |  |     |     |   movea.l 25ac <IntuitionBase>,a1
+ 222:	|  |  |  |  |  |  |     |     |   movea.l 25a6 <SysBase>,a6
+ 228:	|  |  |  |  |  |  |     |     |   movea.l 259e <IntuitionBase>,a1
  22e:	|  |  |  |  |  |  |     |     |   jsr -414(a6)
 	CloseLibrary((struct Library*)DOSBase);
- 232:	|  |  |  |  |  |  |     |     |   movea.l 25b4 <SysBase>,a6
- 238:	|  |  |  |  |  |  |     |     |   movea.l 25b0 <DOSBase>,a1
+ 232:	|  |  |  |  |  |  |     |     |   movea.l 25a6 <SysBase>,a6
+ 238:	|  |  |  |  |  |  |     |     |   movea.l 25a2 <DOSBase>,a1
  23e:	|  |  |  |  |  |  |     |     |   jsr -414(a6)
 	
 	return 0;
@@ -249,11 +249,11 @@ int main() {
 			switch (message->Class) {
  24e:	|  |  |  |  |  |  |     '-----|-> moveq #1,d3
 			ReplyMsg((struct Message *)message);
- 250:	|  |  |  |  |  |  |           |   movea.l 25b4 <SysBase>,a6
+ 250:	|  |  |  |  |  |  |           |   movea.l 25a6 <SysBase>,a6
  256:	|  |  |  |  |  |  |           |   movea.l a2,a1
  258:	|  |  |  |  |  |  |           |   jsr -378(a6)
 		while ((message = (struct IntuiMessage *)GetMsg(window->UserPort))) {
- 25c:	|  |  |  |  |  |  |           |   movea.l 25b4 <SysBase>,a6
+ 25c:	|  |  |  |  |  |  |           |   movea.l 25a6 <SysBase>,a6
  262:	|  |  |  |  |  |  |           |   movea.l 86(a3),a0
  266:	|  |  |  |  |  |  |           |   jsr -372(a6)
  26a:	|  |  |  |  |  |  |           |   movea.l d0,a2
@@ -267,11 +267,11 @@ int main() {
  27e:	|  |  |  |  |  |              |   neg.w d0
  280:	|  |  |  |  |  |              |   or.w d0,d3
 			ReplyMsg((struct Message *)message);
- 282:	|  |  |  |  |  |              |   movea.l 25b4 <SysBase>,a6
+ 282:	|  |  |  |  |  |              |   movea.l 25a6 <SysBase>,a6
  288:	|  |  |  |  |  |              |   movea.l a2,a1
  28a:	|  |  |  |  |  |              |   jsr -378(a6)
 		while ((message = (struct IntuiMessage *)GetMsg(window->UserPort))) {
- 28e:	|  |  |  |  |  |              |   movea.l 25b4 <SysBase>,a6
+ 28e:	|  |  |  |  |  |              |   movea.l 25a6 <SysBase>,a6
  294:	|  |  |  |  |  |              |   movea.l 86(a3),a0
  298:	|  |  |  |  |  |              |   jsr -372(a6)
  29c:	|  |  |  |  |  |              |   movea.l d0,a2
@@ -279,32 +279,32 @@ int main() {
  2a0:	|  |  |  |  |  '--------------|-- bne.w 1a4 <main+0x118>
  2a4:	|  |  |  |  |                 '-- bra.w 200 <main+0x174>
 		CloseLibrary((struct Library*)IntuitionBase);
- 2a8:	|  |  |  >--|-------------------> movea.l 25b4 <SysBase>,a6
- 2ae:	|  |  |  |  |                     movea.l 25ac <IntuitionBase>,a1
+ 2a8:	|  |  |  >--|-------------------> movea.l 25a6 <SysBase>,a6
+ 2ae:	|  |  |  |  |                     movea.l 259e <IntuitionBase>,a1
  2b4:	|  |  |  |  |                     jsr -414(a6)
 		CloseLibrary((struct Library*)DOSBase);
- 2b8:	|  |  |  |  |                     movea.l 25b4 <SysBase>,a6
- 2be:	|  |  |  |  |                     movea.l 25b0 <DOSBase>,a1
+ 2b8:	|  |  |  |  |                     movea.l 25a6 <SysBase>,a6
+ 2be:	|  |  |  |  |                     movea.l 25a2 <DOSBase>,a1
  2c4:	|  |  |  |  |                     jsr -414(a6)
 		Exit(0);
- 2c8:	|  |  |  |  |                     movea.l 25b0 <DOSBase>,a6
+ 2c8:	|  |  |  |  |                     movea.l 25a2 <DOSBase>,a6
  2ce:	|  |  |  |  |                     moveq #0,d1
  2d0:	|  |  |  |  |                     jsr -144(a6)
  2d4:	|  |  |  |  +-------------------- bra.w ec <main+0x60>
 		CloseLibrary((struct Library*)DOSBase);
- 2d8:	>--|--|--|--|-------------------> movea.l 25b4 <SysBase>,a6
- 2de:	|  |  |  |  |                     movea.l 25b0 <DOSBase>,a1
+ 2d8:	>--|--|--|--|-------------------> movea.l 25a6 <SysBase>,a6
+ 2de:	|  |  |  |  |                     movea.l 25a2 <DOSBase>,a1
  2e4:	|  |  |  |  |                     jsr -414(a6)
 		Exit(0);
- 2e8:	|  |  |  |  |                     movea.l 25b0 <DOSBase>,a6
+ 2e8:	|  |  |  |  |                     movea.l 25a2 <DOSBase>,a6
  2ee:	|  |  |  |  |                     moveq #0,d1
  2f0:	|  |  |  |  |                     jsr -144(a6)
 	GfxBase = (struct GfxBase*)OpenLibrary((CONST_STRPTR)"graphics.library", 0);
- 2f4:	|  |  |  |  |                     movea.l 25b4 <SysBase>,a6
+ 2f4:	|  |  |  |  |                     movea.l 25a6 <SysBase>,a6
  2fa:	|  |  |  |  |                     lea 57e <DrawWindowText+0x246>,a1
  300:	|  |  |  |  |                     moveq #0,d0
  302:	|  |  |  |  |                     jsr -552(a6)
- 306:	|  |  |  |  |                     move.l d0,25b8 <GfxBase>
+ 306:	|  |  |  |  |                     move.l d0,25aa <GfxBase>
 	if (!GfxBase) {
  30c:	|  |  |  |  '-------------------- bne.w ec <main+0x60>
  310:	|  |  |  '----------------------- bra.s 2a8 <main+0x21c>
@@ -313,11 +313,11 @@ int main() {
  314:	|  |                              moveq #0,d1
  316:	|  |                              jsr -144(a6)
 	IntuitionBase = (struct IntuitionBase*)OpenLibrary((CONST_STRPTR)"intuition.library", 0);
- 31a:	|  |                              movea.l 25b4 <SysBase>,a6
+ 31a:	|  |                              movea.l 25a6 <SysBase>,a6
  320:	|  |                              lea 56c <DrawWindowText+0x234>,a1
  326:	|  |                              moveq #0,d0
  328:	|  |                              jsr -552(a6)
- 32c:	|  |                              move.l d0,25ac <IntuitionBase>
+ 32c:	|  |                              move.l d0,259e <IntuitionBase>
 	if (!IntuitionBase) {
  332:	|  '----------------------------- bne.w d0 <main+0x44>
  336:	'-------------------------------- bra.s 2d8 <main+0x24c>
@@ -327,7 +327,7 @@ void DrawWindowText(struct Window *window) {
  338:	movem.l d2-d4/a2-a3/a6,-(sp)
  33c:	movea.l 28(sp),a2
 	SetAPen(window->RPort, 0);  // White background
- 340:	movea.l 25b8 <GfxBase>,a6
+ 340:	movea.l 25aa <GfxBase>,a6
  346:	movea.l 50(a2),a1
  34a:	moveq #0,d0
  34c:	jsr -342(a6)
@@ -345,7 +345,7 @@ void DrawWindowText(struct Window *window) {
  36e:	move.b 57(a2),d4
  372:	ext.w d4
  374:	suba.w d4,a0
- 376:	movea.l 25b8 <GfxBase>,a6
+ 376:	movea.l 25aa <GfxBase>,a6
  37c:	movea.l 50(a2),a1
  380:	ext.l d0
  382:	ext.l d1
@@ -354,7 +354,7 @@ void DrawWindowText(struct Window *window) {
  388:	subq.l #1,d3
  38a:	jsr -306(a6)
 	SetAPen(window->RPort, 2);  // Color 2 (usually dark)
- 38e:	movea.l 25b8 <GfxBase>,a6
+ 38e:	movea.l 25aa <GfxBase>,a6
  394:	movea.l 50(a2),a1
  398:	moveq #2,d0
  39a:	jsr -342(a6)
@@ -369,7 +369,7 @@ void DrawWindowText(struct Window *window) {
  3b2:	move.b 56(a2),d1
  3b6:	ext.w d1
  3b8:	suba.w d1,a0
- 3ba:	movea.l 25b8 <GfxBase>,a6
+ 3ba:	movea.l 25aa <GfxBase>,a6
  3c0:	movea.l 50(a2),a1
  3c4:	addq.l #5,d0
  3c6:	move.l d3,d1
@@ -380,12 +380,12 @@ void DrawWindowText(struct Window *window) {
  3d0:	add.l d4,d3
  3d2:	jsr -306(a6)
 	SetAPen(window->RPort, 3);  // Color 3 for text (usually orange/light)
- 3d6:	movea.l 25b8 <GfxBase>,a6
+ 3d6:	movea.l 25aa <GfxBase>,a6
  3dc:	movea.l 50(a2),a1
  3e0:	moveq #3,d0
  3e2:	jsr -342(a6)
 	SetBPen(window->RPort, 2);  // Background color 2
- 3e6:	movea.l 25b8 <GfxBase>,a6
+ 3e6:	movea.l 25aa <GfxBase>,a6
  3ec:	movea.l 50(a2),a1
  3f0:	moveq #2,d0
  3f2:	jsr -348(a6)
@@ -396,7 +396,7 @@ void DrawWindowText(struct Window *window) {
  3fe:	move.b 55(a2),d1
  402:	ext.w d1
  404:	movea.w d1,a0
- 406:	movea.l 25b8 <GfxBase>,a6
+ 406:	movea.l 25aa <GfxBase>,a6
  40c:	movea.l 50(a2),a1
  410:	moveq #15,d0
  412:	add.l a3,d0
@@ -404,7 +404,7 @@ void DrawWindowText(struct Window *window) {
  416:	add.l a0,d1
  418:	jsr -240(a6)
 	Text(window->RPort, (STRPTR)"*** HELLO WORKBENCH! ***", 25);
- 41c:	movea.l 25b8 <GfxBase>,a6
+ 41c:	movea.l 25aa <GfxBase>,a6
  422:	movea.l 50(a2),a1
  426:	lea 50e <DrawWindowText+0x1d6>,a0
  42c:	moveq #25,d0
@@ -416,7 +416,7 @@ void DrawWindowText(struct Window *window) {
  43a:	move.b 55(a2),d1
  43e:	ext.w d1
  440:	movea.w d1,a0
- 442:	movea.l 25b8 <GfxBase>,a6
+ 442:	movea.l 25aa <GfxBase>,a6
  448:	movea.l 50(a2),a1
  44c:	moveq #15,d0
  44e:	add.l a3,d0
@@ -424,7 +424,7 @@ void DrawWindowText(struct Window *window) {
  452:	add.l a0,d1
  454:	jsr -240(a6)
 	Text(window->RPort, (STRPTR)"Program started from Workbench", 30);
- 458:	movea.l 25b8 <GfxBase>,a6
+ 458:	movea.l 25aa <GfxBase>,a6
  45e:	movea.l 50(a2),a1
  462:	lea 527 <DrawWindowText+0x1ef>,a0
  468:	moveq #30,d0
@@ -436,7 +436,7 @@ void DrawWindowText(struct Window *window) {
  476:	move.b 55(a2),d1
  47a:	ext.w d1
  47c:	movea.w d1,a0
- 47e:	movea.l 25b8 <GfxBase>,a6
+ 47e:	movea.l 25aa <GfxBase>,a6
  484:	movea.l 50(a2),a1
  488:	moveq #15,d0
  48a:	add.l a3,d0
@@ -444,13 +444,13 @@ void DrawWindowText(struct Window *window) {
  48e:	add.l a0,d1
  490:	jsr -240(a6)
 	Text(window->RPort, (STRPTR)"Close window or press ESC", 25);
- 494:	movea.l 25b8 <GfxBase>,a6
+ 494:	movea.l 25aa <GfxBase>,a6
  49a:	movea.l 50(a2),a1
  49e:	lea 546 <DrawWindowText+0x20e>,a0
  4a4:	moveq #25,d0
  4a6:	jsr -60(a6)
 	SetAPen(window->RPort, 1);  // Black
- 4aa:	movea.l 25b8 <GfxBase>,a6
+ 4aa:	movea.l 25aa <GfxBase>,a6
  4b0:	movea.l 50(a2),a1
  4b4:	moveq #1,d0
  4b6:	jsr -342(a6)
@@ -461,7 +461,7 @@ void DrawWindowText(struct Window *window) {
  4c2:	move.b 55(a2),d1
  4c6:	ext.w d1
  4c8:	movea.w d1,a0
- 4ca:	movea.l 25b8 <GfxBase>,a6
+ 4ca:	movea.l 25aa <GfxBase>,a6
  4d0:	movea.l 50(a2),a1
  4d4:	addq.l #5,d0
  4d6:	moveq #90,d1
@@ -476,7 +476,7 @@ void DrawWindowText(struct Window *window) {
  4ec:	move.b 55(a2),d1
  4f0:	ext.w d1
  4f2:	movea.w d1,a0
- 4f4:	movea.l 25b8 <GfxBase>,a6
+ 4f4:	movea.l 25aa <GfxBase>,a6
  4fa:	movea.l 50(a2),a1
  4fe:	subq.l #6,d0
  500:	moveq #90,d1

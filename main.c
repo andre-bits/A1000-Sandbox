@@ -38,7 +38,7 @@ void DrawWindowText(struct Window *window) {
 	
 	// Draw text with proper positioning (account for window borders)
 	Move(window->RPort, window->BorderLeft + 15, window->BorderTop + 25);
-	Text(window->RPort, (STRPTR)"*** HELLO WORKBENCH! ***", 25);
+	Text(window->RPort, (STRPTR)"HELLO WORKBENCH!", 25);
 	
 	Move(window->RPort, window->BorderLeft + 15, window->BorderTop + 45);
 	Text(window->RPort, (STRPTR)"Program started from Workbench", 30);
@@ -70,7 +70,7 @@ void WorkbenchMode() {
 	nw.Flags = WINDOWCLOSE | WINDOWDRAG | WINDOWDEPTH | ACTIVATE | SMART_REFRESH;
 	nw.FirstGadget = NULL;
 	nw.CheckMark = NULL;
-	nw.Title = (UBYTE *)"*** AMIGA WORKBENCH TEST ***";
+	nw.Title = (UBYTE *)"AMIGA SANDBOX";
 	nw.Screen = NULL;  // Use default Workbench screen
 	nw.BitMap = NULL;
 	nw.MinWidth = 200;
@@ -117,7 +117,7 @@ void WorkbenchMode() {
 }
 
 int main() {
-	SysBase = *((struct ExecBase**)4UL);
+	SysBase = *(struct ExecBase**)4;
 
 	// Open required libraries
 	DOSBase = (struct DosLibrary*)OpenLibrary((CONST_STRPTR)"dos.library", 0);
