@@ -12,8 +12,6 @@ struct DosLibrary *DOSBase;
 struct IntuitionBase *IntuitionBase;
 struct GfxBase *GfxBase;
 
-
-
 // Function to detect if started from Workbench
 BOOL IsWorkbenchStartup() {
 	struct Process *proc = (struct Process *)FindTask(NULL);
@@ -139,16 +137,18 @@ int main() {
 		Exit(0);
 	}
 
+	WorkbenchMode();
+
 	// Check if started from Workbench
-	if (IsWorkbenchStartup()) {
-		// Started from Workbench - create window
-		WorkbenchMode();
-	} else {
-		// Started from CLI/Shell - console output
-		Write(Output(), (APTR)"Hello console!\n", 15);
-		Write(Output(), (APTR)"This program was started from CLI/Shell.\n", 41);
-		Write(Output(), (APTR)"Try running it from Workbench for GUI mode.\n", 45);
-	}
+	// if (IsWorkbenchStartup()) {
+	// 	// Started from Workbench - create window
+	// 	WorkbenchMode();
+	// } else {
+	// 	// Started from CLI/Shell - console output
+	// 	Write(Output(), (APTR)"Hello console!\n", 15);
+	// 	Write(Output(), (APTR)"This program was started from CLI/Shell.\n", 41);
+	// 	Write(Output(), (APTR)"Try running it from Workbench for GUI mode.\n", 45);
+	// }
 
 	// Clean up libraries
 	CloseLibrary((struct Library*)GfxBase);
