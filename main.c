@@ -87,15 +87,14 @@ void DrawButtonBackground(struct Window *window) {
 void ChangeWindowBackground(struct Window *window) {
 	struct RastPort *rp = window->RPort;
 	
-	// Toggle background color between white and green
+	// Toggle background color between blue and green using existing palette colors
 	if (isGreenBackground) {
-		// Change back to white (default window background)
-		SetAPen(rp, 0);  // White pen (background color)
+		// Change to blue background (default Workbench color scheme)
+		SetAPen(rp, 1);  // Blue pen (typically dark blue in Workbench)
 		isGreenBackground = FALSE;
 	} else {
-		// Change to green - now using pen 2 (button text uses pen 1 so no conflict)
-		SetRGB4(&(window->WScreen->ViewPort), 2, 0, 15, 0);  // Set pen 2 to bright green
-		SetAPen(rp, 2);  // Use pen 2 for green background
+		// Change to green using existing pen 2 (don't modify the palette!)
+		SetAPen(rp, 2);  // Use pen 2 as-is from existing palette
 		isGreenBackground = TRUE;
 	}
 	
@@ -129,7 +128,7 @@ void WorkbenchMode() {
 	nw.Flags = WINDOWCLOSE | WINDOWDRAG | WINDOWDEPTH | ACTIVATE | SMART_REFRESH;
 	nw.FirstGadget = &colorButton;
 	nw.CheckMark = NULL;
-	nw.Title = (UBYTE *)"AMIGA SANDBOX";
+	nw.Title = (UBYTE *)"BG Program";
 	nw.Screen = NULL;  // Use default Workbench screen
 	nw.BitMap = NULL;
 	nw.MinWidth = 200;
@@ -167,9 +166,9 @@ void WorkbenchMode() {
 					
 					// Update window title to reflect current state
 					if (isGreenBackground) {
-						SetWindowTitles(window, (UBYTE *)"AMIGA SANDBOX - Green Background", (UBYTE *)-1);
+						SetWindowTitles(window, (UBYTE *)"BG Program - Dark", (UBYTE *)-1);
 					} else {
-						SetWindowTitles(window, (UBYTE *)"AMIGA SANDBOX - Blue Background", (UBYTE *)-1);
+						SetWindowTitles(window, (UBYTE *)"BG Program - White", (UBYTE *)-1);
 					}
 					break;
 				case REFRESHWINDOW:
@@ -179,9 +178,15 @@ void WorkbenchMode() {
 					// Restore the current background color in the client area only
 					if (isGreenBackground) {
 						struct RastPort *rp = window->RPort;
-						// Restore pen 2 to green for background
-						SetRGB4(&(window->WScreen->ViewPort), 2, 0, 15, 0);  // Bright green
-						SetAPen(rp, 2);  // Green pen (pen 2)
+						// Use existing pen 2 (don't modify palette)
+						SetAPen(rp, 2);  // Green pen (pen 2 as-is)
+						RectFill(rp, window->BorderLeft, window->BorderTop, 
+						         window->Width - window->BorderRight - 1, 
+						         window->Height - window->BorderBottom - 1);
+					} else {
+						struct RastPort *rp = window->RPort;
+						// Use blue pen (pen 1)
+						SetAPen(rp, 1);  // Blue pen
 						RectFill(rp, window->BorderLeft, window->BorderTop, 
 						         window->Width - window->BorderRight - 1, 
 						         window->Height - window->BorderBottom - 1);
