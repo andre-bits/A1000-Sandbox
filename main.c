@@ -5,6 +5,7 @@
 #include <proto/graphics.h>
 #include <workbench/startup.h>
 #include <intuition/intuition.h>
+#include <intuition/gadgetclass.h>
 #include <graphics/text.h>
 
 struct ExecBase *SysBase;
@@ -12,45 +13,56 @@ struct DosLibrary *DOSBase;
 struct IntuitionBase *IntuitionBase;
 struct GfxBase *GfxBase;
 
+// Border data for button outline (bigger button: 140x25)
+SHORT buttonBorderData[] = {
+	0, 0,           // Start point
+	199, 0,         // Top line
+	199, 29,        // Right line  
+	0, 29,          // Bottom line
+	0, 0            // Back to start
+};
+
+struct Border buttonBorder = {
+	0, 0,           // LeftEdge, TopEdge
+	1, 0, JAM1,     // FrontPen, BackPen, DrawMode
+	5,              // Count (number of coordinate pairs)
+	buttonBorderData, // XY coordinate data
+	NULL            // NextBorder
+};
+
+// Simple gadget structures for our button
+struct IntuiText buttonText = {
+	1, 0,           // FrontPen, BackPen (black on white)
+	JAM2,           // DrawMode
+	42, 12,          // LeftEdge, TopEdge (perfectly centered in 200px wide button)
+	NULL,           // ITextFont (use default)
+	(UBYTE *)"Change Color", // IText
+	NULL            // NextText
+};
+
+struct Gadget colorButton = {
+	NULL,               // NextGadget
+	100, 60,            // LeftEdge, TopEdge (centered horizontally and moved up)
+	200, 30,            // Width, Height (bigger button)
+	GADGHCOMP,          // Flags (highlight when selected)
+	RELVERIFY,          // Activation (release to verify)
+	BOOLGADGET,         // GadgetType
+	(APTR)&buttonBorder, // GadgetRender (our border)
+	NULL,               // SelectRender
+	&buttonText,        // GadgetText
+	0,                  // MutualExclude
+	NULL,               // SpecialInfo
+	1,                  // GadgetID
+	NULL                // UserData
+};
+
 // Function to detect if started from Workbench
 BOOL IsWorkbenchStartup() {
 	struct Process *proc = (struct Process *)FindTask(NULL);
 	return (proc->pr_CLI == 0);
 }
 
-// Function to draw text in the window
-void DrawWindowText(struct Window *window) {
-	// Clear the window first
-	SetAPen(window->RPort, 0);  // White background
-	RectFill(window->RPort, window->BorderLeft, window->BorderTop, 
-	         window->Width - window->BorderRight - 1, 
-	         window->Height - window->BorderBottom - 1);
-	
-	// Draw a colored rectangle as background
-	SetAPen(window->RPort, 2);  // Color 2 (usually dark)
-	RectFill(window->RPort, window->BorderLeft + 5, window->BorderTop + 5, 
-	         window->Width - window->BorderRight - 6, 
-	         window->BorderTop + 85);
-	
-	// Set text colors
-	SetAPen(window->RPort, 3);  // Color 3 for text (usually orange/light)
-	SetBPen(window->RPort, 2);  // Background color 2
-	
-	// Draw text with proper positioning (account for window borders)
-	Move(window->RPort, window->BorderLeft + 15, window->BorderTop + 25);
-	Text(window->RPort, (STRPTR)"HELLO WORKBENCH!", 25);
-	
-	Move(window->RPort, window->BorderLeft + 15, window->BorderTop + 45);
-	Text(window->RPort, (STRPTR)"Program started from Workbench", 30);
-	
-	Move(window->RPort, window->BorderLeft + 15, window->BorderTop + 65);
-	Text(window->RPort, (STRPTR)"Close window or press ESC", 25);
-	
-	// Draw a simple border line
-	SetAPen(window->RPort, 1);  // Black
-	Move(window->RPort, window->BorderLeft + 5, window->BorderTop + 90);
-	Draw(window->RPort, window->Width - window->BorderRight - 6, window->BorderTop + 90);
-}
+
 
 // Function to create and manage Workbench window
 void WorkbenchMode() {
@@ -63,12 +75,12 @@ void WorkbenchMode() {
 	nw.LeftEdge = 50;
 	nw.TopEdge = 50;
 	nw.Width = 400;
-	nw.Height = 200;
+	nw.Height = 150;
 	nw.DetailPen = 0;
 	nw.BlockPen = 1;
-	nw.IDCMPFlags = CLOSEWINDOW | MOUSEBUTTONS | VANILLAKEY | REFRESHWINDOW;
+	nw.IDCMPFlags = CLOSEWINDOW | MOUSEBUTTONS | VANILLAKEY | REFRESHWINDOW | GADGETUP;
 	nw.Flags = WINDOWCLOSE | WINDOWDRAG | WINDOWDEPTH | ACTIVATE | SMART_REFRESH;
-	nw.FirstGadget = NULL;
+	nw.FirstGadget = &colorButton;
 	nw.CheckMark = NULL;
 	nw.Title = (UBYTE *)"AMIGA SANDBOX";
 	nw.Screen = NULL;  // Use default Workbench screen
@@ -85,9 +97,6 @@ void WorkbenchMode() {
 		return;
 	}
 	
-	// Draw initial text
-	DrawWindowText(window);
-	
 	// Event loop
 	while (!done) {
 		Wait(1L << window->UserPort->mp_SigBit);
@@ -102,10 +111,15 @@ void WorkbenchMode() {
 						done = TRUE;
 					}
 					break;
+				case GADGETUP:
+					// Button was clicked! For now, just flash the title
+					SetWindowTitles(window, (UBYTE *)"Button Clicked!", (UBYTE *)-1);
+					Delay(30); // Brief delay
+					SetWindowTitles(window, (UBYTE *)"AMIGA SANDBOX", (UBYTE *)-1);
+					break;
 				case REFRESHWINDOW:
 					// Redraw the window contents
 					BeginRefresh(window);
-					DrawWindowText(window);
 					EndRefresh(window, TRUE);
 					break;
 			}
