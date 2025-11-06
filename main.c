@@ -35,7 +35,7 @@ struct Border buttonBorder = {
 
 // Simple gadget structures for our button
 struct IntuiText buttonText = {
-	2, 3,           // FrontPen (dark blue=2), BackPen (orange=3)
+	1, 3,           // FrontPen (black=1), BackPen (orange=3)
 	JAM2,           // DrawMode
 	42, 12,          // LeftEdge, TopEdge (perfectly centered in 200px wide button)
 	NULL,           // ITextFont (use default)
@@ -93,8 +93,9 @@ void ChangeWindowBackground(struct Window *window) {
 		SetAPen(rp, 0);  // White pen (background color)
 		isGreenBackground = FALSE;
 	} else {
-		// Change to green
-		SetAPen(rp, 2);  // Green pen in default Workbench palette
+		// Change to green - now using pen 2 (button text uses pen 1 so no conflict)
+		SetRGB4(&(window->WScreen->ViewPort), 2, 0, 15, 0);  // Set pen 2 to bright green
+		SetAPen(rp, 2);  // Use pen 2 for green background
 		isGreenBackground = TRUE;
 	}
 	
@@ -168,7 +169,7 @@ void WorkbenchMode() {
 					if (isGreenBackground) {
 						SetWindowTitles(window, (UBYTE *)"AMIGA SANDBOX - Green Background", (UBYTE *)-1);
 					} else {
-						SetWindowTitles(window, (UBYTE *)"AMIGA SANDBOX - White Background", (UBYTE *)-1);
+						SetWindowTitles(window, (UBYTE *)"AMIGA SANDBOX - Blue Background", (UBYTE *)-1);
 					}
 					break;
 				case REFRESHWINDOW:
@@ -178,7 +179,9 @@ void WorkbenchMode() {
 					// Restore the current background color in the client area only
 					if (isGreenBackground) {
 						struct RastPort *rp = window->RPort;
-						SetAPen(rp, 2);  // Green pen
+						// Restore pen 2 to green for background
+						SetRGB4(&(window->WScreen->ViewPort), 2, 0, 15, 0);  // Bright green
+						SetAPen(rp, 2);  // Green pen (pen 2)
 						RectFill(rp, window->BorderLeft, window->BorderTop, 
 						         window->Width - window->BorderRight - 1, 
 						         window->Height - window->BorderBottom - 1);

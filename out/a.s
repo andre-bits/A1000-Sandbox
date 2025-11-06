@@ -17,14 +17,14 @@ __attribute__((used)) __attribute__((section(".text.unlikely"))) void _start() {
 	unsigned long i;
 
 	count = __preinit_array_end - __preinit_array_start;
-   4:	       move.l #9846,d3
-   a:	       subi.l #9846,d3
+   4:	       move.l #9899,d3
+   a:	       subi.l #9899,d3
   10:	       asr.l #2,d3
 	for (i = 0; i < count; i++)
-  12:	       move.l #9846,d0
-  18:	       cmpi.l #9846,d0
+  12:	       move.l #9899,d0
+  18:	       cmpi.l #9899,d0
   1e:	,----- beq.s 32 <_start+0x32>
-  20:	|      lea 2676 <buttonBorderData>,a2
+  20:	|      lea 26ab <__fini_array_end>,a2
   26:	|      moveq #0,d2
 		__preinit_array_start[i]();
   28:	|  ,-> movea.l (a2)+,a0
@@ -35,14 +35,14 @@ __attribute__((used)) __attribute__((section(".text.unlikely"))) void _start() {
   30:	|  '-- bcs.s 28 <_start+0x28>
 
 	count = __init_array_end - __init_array_start;
-  32:	'----> move.l #9846,d3
-  38:	       subi.l #9846,d3
+  32:	'----> move.l #9899,d3
+  38:	       subi.l #9899,d3
   3e:	       asr.l #2,d3
 	for (i = 0; i < count; i++)
-  40:	       move.l #9846,d0
-  46:	       cmpi.l #9846,d0
+  40:	       move.l #9899,d0
+  46:	       cmpi.l #9899,d0
   4c:	,----- beq.s 60 <_start+0x60>
-  4e:	|      lea 2676 <buttonBorderData>,a2
+  4e:	|      lea 26ab <__fini_array_end>,a2
   54:	|      moveq #0,d2
 		__init_array_start[i]();
   56:	|  ,-> movea.l (a2)+,a0
@@ -57,12 +57,12 @@ __attribute__((used)) __attribute__((section(".text.unlikely"))) void _start() {
 
 	// call dtors
 	count = __fini_array_end - __fini_array_start;
-  66:	       move.l #9846,d2
-  6c:	       subi.l #9846,d2
+  66:	       move.l #9899,d2
+  6c:	       subi.l #9899,d2
   72:	       asr.l #2,d2
 	for (i = count; i > 0; i--)
   74:	,----- beq.s 86 <_start+0x86>
-  76:	|      lea 2676 <buttonBorderData>,a2
+  76:	|      lea 26ab <__fini_array_end>,a2
 		__fini_array_start[i - 1]();
   7c:	|  ,-> subq.l #1,d2
   7e:	|  |   movea.l -(a2),a0
@@ -85,38 +85,38 @@ int main() {
   90:	                                                 movem.l d2-d7/a2-a6,-(sp)
 	SysBase = *(struct ExecBase**)4;
   94:	                                                 movea.l 4 <_start+0x4>,a6
-  98:	                                                 move.l a6,26e8 <SysBase>
+  98:	                                                 move.l a6,271e <SysBase>
 
 	// Open required libraries
 	DOSBase = (struct DosLibrary*)OpenLibrary((CONST_STRPTR)"dos.library", 0);
-  9e:	                                                 lea 5ea <main+0x55e>,a1
+  9e:	                                                 lea 620 <main+0x594>,a1
   a4:	                                                 moveq #0,d0
   a6:	                                                 jsr -552(a6)
-  aa:	                                                 move.l d0,26e4 <DOSBase>
+  aa:	                                                 move.l d0,271a <DOSBase>
 	if (!DOSBase)
-  b0:	      ,----------------------------------------- beq.w 5c4 <main+0x538>
+  b0:	      ,----------------------------------------- beq.w 5fa <main+0x56e>
 		Exit(0);
 
 	IntuitionBase = (struct IntuitionBase*)OpenLibrary((CONST_STRPTR)"intuition.library", 0);
-  b4:	      |                                          movea.l 26e8 <SysBase>,a6
-  ba:	      |                                          lea 5f6 <main+0x56a>,a1
+  b4:	      |                                          movea.l 271e <SysBase>,a6
+  ba:	      |                                          lea 62c <main+0x5a0>,a1
   c0:	      |                                          moveq #0,d0
   c2:	      |                                          jsr -552(a6)
-  c6:	      |                                          move.l d0,26e0 <IntuitionBase>
+  c6:	      |                                          move.l d0,2716 <IntuitionBase>
 	if (!IntuitionBase) {
-  cc:	,-----|----------------------------------------- beq.w 58a <main+0x4fe>
+  cc:	,-----|----------------------------------------- beq.w 5c0 <main+0x534>
 		CloseLibrary((struct Library*)DOSBase);
 		Exit(0);
 	}
 
 	GfxBase = (struct GfxBase*)OpenLibrary((CONST_STRPTR)"graphics.library", 0);
-  d0:	|  ,--|----------------------------------------> movea.l 26e8 <SysBase>,a6
-  d6:	|  |  |                                          lea 608 <main+0x57c>,a1
+  d0:	|  ,--|----------------------------------------> movea.l 271e <SysBase>,a6
+  d6:	|  |  |                                          lea 63e <main+0x5b2>,a1
   dc:	|  |  |                                          moveq #0,d0
   de:	|  |  |                                          jsr -552(a6)
-  e2:	|  |  |                                          move.l d0,26dc <GfxBase>
+  e2:	|  |  |                                          move.l d0,2712 <GfxBase>
 	if (!GfxBase) {
-  e8:	|  |  |  ,-------------------------------------- beq.w 55a <main+0x4ce>
+  e8:	|  |  |  ,-------------------------------------- beq.w 590 <main+0x504>
 	nw.LeftEdge = 50;
   ec:	|  |  |  |  ,----------------------------------> move.w #50,44(sp)
 	nw.TopEdge = 50;
@@ -132,11 +132,11 @@ int main() {
 	nw.Flags = WINDOWCLOSE | WINDOWDRAG | WINDOWDEPTH | ACTIVATE | SMART_REFRESH;
  112:	|  |  |  |  |                                    move.l #4110,58(sp)
 	nw.FirstGadget = &colorButton;
- 11a:	|  |  |  |  |                                    move.l #9902,62(sp)
+ 11a:	|  |  |  |  |                                    move.l #9956,62(sp)
 	nw.CheckMark = NULL;
  122:	|  |  |  |  |                                    clr.l 66(sp)
 	nw.Title = (UBYTE *)"AMIGA SANDBOX";
- 126:	|  |  |  |  |                                    move.l #1561,70(sp)
+ 126:	|  |  |  |  |                                    move.l #1615,70(sp)
 	nw.Screen = NULL;  // Use default Workbench screen
  12e:	|  |  |  |  |                                    clr.l 74(sp)
 	nw.BitMap = NULL;
@@ -152,7 +152,7 @@ int main() {
 	nw.Type = WBENCHSCREEN;
  14e:	|  |  |  |  |                                    move.w #1,90(sp)
 	window = OpenWindow(&nw);
- 154:	|  |  |  |  |                                    movea.l 26e0 <IntuitionBase>,a6
+ 154:	|  |  |  |  |                                    movea.l 2716 <IntuitionBase>,a6
  15a:	|  |  |  |  |                                    lea 44(sp),a0
  15e:	|  |  |  |  |                                    jsr -204(a6)
  162:	|  |  |  |  |                                    movea.l d0,a4
@@ -162,12 +162,12 @@ int main() {
 	struct RastPort *rp = window->RPort;
  16a:	|  |  |  |  |                 |                  move.l 50(a4),d4
 	SetAPen(rp, 3);
- 16e:	|  |  |  |  |                 |                  movea.l 26dc <GfxBase>,a6
+ 16e:	|  |  |  |  |                 |                  movea.l 2712 <GfxBase>,a6
  174:	|  |  |  |  |                 |                  movea.l d4,a1
  176:	|  |  |  |  |                 |                  moveq #3,d0
  178:	|  |  |  |  |                 |                  jsr -342(a6)
 	RectFill(rp, 101, 61, 298, 89);
- 17c:	|  |  |  |  |                 |                  movea.l 26dc <GfxBase>,a6
+ 17c:	|  |  |  |  |                 |                  movea.l 2712 <GfxBase>,a6
  182:	|  |  |  |  |                 |                  movea.l d4,a1
  184:	|  |  |  |  |                 |                  moveq #101,d0
  186:	|  |  |  |  |                 |                  moveq #61,d1
@@ -175,13 +175,13 @@ int main() {
  18e:	|  |  |  |  |                 |                  moveq #89,d3
  190:	|  |  |  |  |                 |                  jsr -306(a6)
 	SetAPen(rp, 1);
- 194:	|  |  |  |  |                 |                  movea.l 26dc <GfxBase>,a6
+ 194:	|  |  |  |  |                 |                  movea.l 2712 <GfxBase>,a6
  19a:	|  |  |  |  |                 |                  movea.l d4,a1
  19c:	|  |  |  |  |                 |                  moveq #1,d0
  19e:	|  |  |  |  |                 |                  jsr -342(a6)
 	RefreshGadgets(&colorButton, window, NULL);
- 1a2:	|  |  |  |  |                 |                  movea.l 26e0 <IntuitionBase>,a6
- 1a8:	|  |  |  |  |                 |                  lea 26ae <colorButton>,a0
+ 1a2:	|  |  |  |  |                 |                  movea.l 2716 <IntuitionBase>,a6
+ 1a8:	|  |  |  |  |                 |                  lea 26e4 <colorButton>,a0
  1ae:	|  |  |  |  |                 |                  movea.l a4,a1
  1b0:	|  |  |  |  |                 |                  suba.l a2,a2
  1b2:	|  |  |  |  |                 |                  jsr -222(a6)
@@ -190,20 +190,20 @@ int main() {
 	RectFill(rp, 101, 61, 298, 89);
  1b8:	|  |  |  |  |                 |                  move.l d2,d5
 	RefreshGadgets(&colorButton, window, NULL);
- 1ba:	|  |  |  |  |                 |                  move.l #9902,d6
-						SetWindowTitles(window, (UBYTE *)"AMIGA SANDBOX - White Background", (UBYTE *)-1);
- 1c0:	|  |  |  |  |                 |                  lea 648 <main+0x5bc>,a5
+ 1ba:	|  |  |  |  |                 |                  move.l #9956,d6
+						SetWindowTitles(window, (UBYTE *)"AMIGA SANDBOX - Blue Background", (UBYTE *)-1);
+ 1c0:	|  |  |  |  |                 |                  lea 67e <main+0x5f2>,a5
 		Wait(1L << window->UserPort->mp_SigBit);
  1c6:	|  |  |  |  |                 |              ,-> movea.l 86(a4),a0
  1ca:	|  |  |  |  |                 |              |   moveq #0,d0
  1cc:	|  |  |  |  |                 |              |   move.b 15(a0),d0
- 1d0:	|  |  |  |  |                 |              |   movea.l 26e8 <SysBase>,a6
+ 1d0:	|  |  |  |  |                 |              |   movea.l 271e <SysBase>,a6
  1d6:	|  |  |  |  |                 |              |   move.l d7,d1
  1d8:	|  |  |  |  |                 |              |   lsl.l d0,d1
  1da:	|  |  |  |  |                 |              |   move.l d1,d0
  1dc:	|  |  |  |  |                 |              |   jsr -318(a6)
 		while ((message = (struct IntuiMessage *)GetMsg(window->UserPort))) {
- 1e0:	|  |  |  |  |                 |              |   movea.l 26e8 <SysBase>,a6
+ 1e0:	|  |  |  |  |                 |              |   movea.l 271e <SysBase>,a6
  1e6:	|  |  |  |  |                 |              |   movea.l 86(a4),a0
  1ea:	|  |  |  |  |                 |              |   jsr -372(a6)
  1ee:	|  |  |  |  |                 |              |   movea.l d0,a3
@@ -224,91 +224,91 @@ int main() {
 	struct RastPort *rp = window->RPort;
  218:	|  |  |  |  |  |              |  |  |  |  |  |   movea.l 50(a4),a2
 		SetAPen(rp, 0);  // White pen (background color)
- 21c:	|  |  |  |  |  |              |  |  |  |  |  |   movea.l 26dc <GfxBase>,a6
- 222:	|  |  |  |  |  |              |  |  |  |  |  |   movea.l a2,a1
+ 21c:	|  |  |  |  |  |              |  |  |  |  |  |   movea.l 2712 <GfxBase>,a6
 	if (isGreenBackground) {
- 224:	|  |  |  |  |  |              |  |  |  |  |  |   tst.w 26da <isGreenBackground>
- 22a:	|  |  |  |  |  |     ,--------|--|--|--|--|--|-- beq.w 48a <main+0x3fe>
+ 222:	|  |  |  |  |  |              |  |  |  |  |  |   tst.w 2710 <isGreenBackground>
+ 228:	|  |  |  |  |  |           ,--|--|--|--|--|--|-- beq.w 4a4 <main+0x418>
 		SetAPen(rp, 0);  // White pen (background color)
- 22e:	|  |  |  |  |  |     |        |  |  |  |  |  |   moveq #0,d0
- 230:	|  |  |  |  |  |     |        |  |  |  |  |  |   jsr -342(a6)
+ 22c:	|  |  |  |  |  |           |  |  |  |  |  |  |   movea.l a2,a1
+ 22e:	|  |  |  |  |  |           |  |  |  |  |  |  |   moveq #0,d0
+ 230:	|  |  |  |  |  |           |  |  |  |  |  |  |   jsr -342(a6)
 		isGreenBackground = FALSE;
- 234:	|  |  |  |  |  |     |        |  |  |  |  |  |   clr.w d0
- 236:	|  |  |  |  |  |     |        |  |  |  |  |  |   move.w d0,26da <isGreenBackground>
+ 234:	|  |  |  |  |  |           |  |  |  |  |  |  |   clr.w d0
+ 236:	|  |  |  |  |  |           |  |  |  |  |  |  |   move.w d0,2710 <isGreenBackground>
 	RectFill(rp, window->BorderLeft, window->BorderTop, 
- 23c:	|  |  |  |  |  |     |        |  |  |  |  |  |   move.b 54(a4),d0
- 240:	|  |  |  |  |  |     |        |  |  |  |  |  |   ext.w d0
- 242:	|  |  |  |  |  |     |        |  |  |  |  |  |   move.b 55(a4),d1
- 246:	|  |  |  |  |  |     |        |  |  |  |  |  |   ext.w d1
- 248:	|  |  |  |  |  |     |        |  |  |  |  |  |   movea.w 8(a4),a0
- 24c:	|  |  |  |  |  |     |        |  |  |  |  |  |   move.b 56(a4),d3
- 250:	|  |  |  |  |  |     |        |  |  |  |  |  |   ext.w d3
- 252:	|  |  |  |  |  |     |        |  |  |  |  |  |   suba.w d3,a0
- 254:	|  |  |  |  |  |     |        |  |  |  |  |  |   move.l a0,d2
- 256:	|  |  |  |  |  |     |        |  |  |  |  |  |   movea.w 10(a4),a1
- 25a:	|  |  |  |  |  |     |        |  |  |  |  |  |   move.b 57(a4),d3
- 25e:	|  |  |  |  |  |     |        |  |  |  |  |  |   ext.w d3
- 260:	|  |  |  |  |  |     |        |  |  |  |  |  |   suba.w d3,a1
- 262:	|  |  |  |  |  |     |        |  |  |  |  |  |   move.l a1,d3
- 264:	|  |  |  |  |  |     |        |  |  |  |  |  |   movea.l 26dc <GfxBase>,a6
- 26a:	|  |  |  |  |  |     |        |  |  |  |  |  |   movea.l a2,a1
- 26c:	|  |  |  |  |  |     |        |  |  |  |  |  |   ext.l d0
- 26e:	|  |  |  |  |  |     |        |  |  |  |  |  |   ext.l d1
- 270:	|  |  |  |  |  |     |        |  |  |  |  |  |   subq.l #1,d2
- 272:	|  |  |  |  |  |     |        |  |  |  |  |  |   subq.l #1,d3
- 274:	|  |  |  |  |  |     |        |  |  |  |  |  |   jsr -306(a6)
+ 23c:	|  |  |  |  |  |           |  |  |  |  |  |  |   move.b 54(a4),d0
+ 240:	|  |  |  |  |  |           |  |  |  |  |  |  |   ext.w d0
+ 242:	|  |  |  |  |  |           |  |  |  |  |  |  |   move.b 55(a4),d1
+ 246:	|  |  |  |  |  |           |  |  |  |  |  |  |   ext.w d1
+ 248:	|  |  |  |  |  |           |  |  |  |  |  |  |   movea.w 8(a4),a0
+ 24c:	|  |  |  |  |  |           |  |  |  |  |  |  |   move.b 56(a4),d3
+ 250:	|  |  |  |  |  |           |  |  |  |  |  |  |   ext.w d3
+ 252:	|  |  |  |  |  |           |  |  |  |  |  |  |   suba.w d3,a0
+ 254:	|  |  |  |  |  |           |  |  |  |  |  |  |   move.l a0,d2
+ 256:	|  |  |  |  |  |           |  |  |  |  |  |  |   movea.w 10(a4),a1
+ 25a:	|  |  |  |  |  |           |  |  |  |  |  |  |   move.b 57(a4),d3
+ 25e:	|  |  |  |  |  |           |  |  |  |  |  |  |   ext.w d3
+ 260:	|  |  |  |  |  |           |  |  |  |  |  |  |   suba.w d3,a1
+ 262:	|  |  |  |  |  |           |  |  |  |  |  |  |   move.l a1,d3
+ 264:	|  |  |  |  |  |           |  |  |  |  |  |  |   movea.l 2712 <GfxBase>,a6
+ 26a:	|  |  |  |  |  |           |  |  |  |  |  |  |   movea.l a2,a1
+ 26c:	|  |  |  |  |  |           |  |  |  |  |  |  |   ext.l d0
+ 26e:	|  |  |  |  |  |           |  |  |  |  |  |  |   ext.l d1
+ 270:	|  |  |  |  |  |           |  |  |  |  |  |  |   subq.l #1,d2
+ 272:	|  |  |  |  |  |           |  |  |  |  |  |  |   subq.l #1,d3
+ 274:	|  |  |  |  |  |           |  |  |  |  |  |  |   jsr -306(a6)
 	struct RastPort *rp = window->RPort;
- 278:	|  |  |  |  |  |     |        |  |  |  |  |  |   movea.l 50(a4),a2
+ 278:	|  |  |  |  |  |           |  |  |  |  |  |  |   movea.l 50(a4),a2
 	SetAPen(rp, 3);
- 27c:	|  |  |  |  |  |     |        |  |  |  |  |  |   movea.l 26dc <GfxBase>,a6
- 282:	|  |  |  |  |  |     |        |  |  |  |  |  |   movea.l a2,a1
- 284:	|  |  |  |  |  |     |        |  |  |  |  |  |   moveq #3,d0
- 286:	|  |  |  |  |  |     |        |  |  |  |  |  |   jsr -342(a6)
+ 27c:	|  |  |  |  |  |           |  |  |  |  |  |  |   movea.l 2712 <GfxBase>,a6
+ 282:	|  |  |  |  |  |           |  |  |  |  |  |  |   movea.l a2,a1
+ 284:	|  |  |  |  |  |           |  |  |  |  |  |  |   moveq #3,d0
+ 286:	|  |  |  |  |  |           |  |  |  |  |  |  |   jsr -342(a6)
 	RectFill(rp, 101, 61, 298, 89);
- 28a:	|  |  |  |  |  |     |        |  |  |  |  |  |   movea.l 26dc <GfxBase>,a6
- 290:	|  |  |  |  |  |     |        |  |  |  |  |  |   movea.l a2,a1
- 292:	|  |  |  |  |  |     |        |  |  |  |  |  |   moveq #101,d0
- 294:	|  |  |  |  |  |     |        |  |  |  |  |  |   moveq #61,d1
- 296:	|  |  |  |  |  |     |        |  |  |  |  |  |   move.l d5,d2
- 298:	|  |  |  |  |  |     |        |  |  |  |  |  |   moveq #89,d3
- 29a:	|  |  |  |  |  |     |        |  |  |  |  |  |   jsr -306(a6)
+ 28a:	|  |  |  |  |  |           |  |  |  |  |  |  |   movea.l 2712 <GfxBase>,a6
+ 290:	|  |  |  |  |  |           |  |  |  |  |  |  |   movea.l a2,a1
+ 292:	|  |  |  |  |  |           |  |  |  |  |  |  |   moveq #101,d0
+ 294:	|  |  |  |  |  |           |  |  |  |  |  |  |   moveq #61,d1
+ 296:	|  |  |  |  |  |           |  |  |  |  |  |  |   move.l d5,d2
+ 298:	|  |  |  |  |  |           |  |  |  |  |  |  |   moveq #89,d3
+ 29a:	|  |  |  |  |  |           |  |  |  |  |  |  |   jsr -306(a6)
 	SetAPen(rp, 1);
- 29e:	|  |  |  |  |  |     |        |  |  |  |  |  |   movea.l 26dc <GfxBase>,a6
- 2a4:	|  |  |  |  |  |     |        |  |  |  |  |  |   movea.l a2,a1
- 2a6:	|  |  |  |  |  |     |        |  |  |  |  |  |   moveq #1,d0
- 2a8:	|  |  |  |  |  |     |        |  |  |  |  |  |   jsr -342(a6)
+ 29e:	|  |  |  |  |  |           |  |  |  |  |  |  |   movea.l 2712 <GfxBase>,a6
+ 2a4:	|  |  |  |  |  |           |  |  |  |  |  |  |   movea.l a2,a1
+ 2a6:	|  |  |  |  |  |           |  |  |  |  |  |  |   moveq #1,d0
+ 2a8:	|  |  |  |  |  |           |  |  |  |  |  |  |   jsr -342(a6)
 	RefreshGadgets(&colorButton, window, NULL);
- 2ac:	|  |  |  |  |  |     |        |  |  |  |  |  |   movea.l 26e0 <IntuitionBase>,a6
- 2b2:	|  |  |  |  |  |     |        |  |  |  |  |  |   movea.l d6,a0
- 2b4:	|  |  |  |  |  |     |        |  |  |  |  |  |   movea.l a4,a1
- 2b6:	|  |  |  |  |  |     |        |  |  |  |  |  |   suba.l a2,a2
- 2b8:	|  |  |  |  |  |     |        |  |  |  |  |  |   jsr -222(a6)
+ 2ac:	|  |  |  |  |  |           |  |  |  |  |  |  |   movea.l 2716 <IntuitionBase>,a6
+ 2b2:	|  |  |  |  |  |           |  |  |  |  |  |  |   movea.l d6,a0
+ 2b4:	|  |  |  |  |  |           |  |  |  |  |  |  |   movea.l a4,a1
+ 2b6:	|  |  |  |  |  |           |  |  |  |  |  |  |   suba.l a2,a2
+ 2b8:	|  |  |  |  |  |           |  |  |  |  |  |  |   jsr -222(a6)
 						SetWindowTitles(window, (UBYTE *)"AMIGA SANDBOX - Green Background", (UBYTE *)-1);
- 2bc:	|  |  |  |  |  |     |        |  |  |  |  |  |   movea.l 26e0 <IntuitionBase>,a6
- 2c2:	|  |  |  |  |  |     |        |  |  |  |  |  |   movea.l a4,a0
+ 2bc:	|  |  |  |  |  |           |  |  |  |  |  |  |   movea.l 2716 <IntuitionBase>,a6
+ 2c2:	|  |  |  |  |  |           |  |  |  |  |  |  |   movea.l a4,a0
 					if (isGreenBackground) {
- 2c4:	|  |  |  |  |  |     |        |  |  |  |  |  |   tst.w 26da <isGreenBackground>
- 2ca:	|  |  |  |  |  |  ,--|--------|--|--|--|--|--|-- beq.w 52a <main+0x49e>
+ 2c4:	|  |  |  |  |  |           |  |  |  |  |  |  |   tst.w 2710 <isGreenBackground>
+ 2ca:	|  |  |  |  |  |  ,--------|--|--|--|--|--|--|-- beq.w 560 <main+0x4d4>
 						SetWindowTitles(window, (UBYTE *)"AMIGA SANDBOX - Green Background", (UBYTE *)-1);
- 2ce:	|  |  |  |  |  |  |  |     ,--|--|--|--|--|--|-> lea 627 <main+0x59b>,a1
- 2d4:	|  |  |  |  |  |  |  |     |  |  |  |  |  |  |   movea.w #-1,a2
- 2d8:	|  |  |  |  |  |  |  |     |  |  |  |  |  |  |   jsr -276(a6)
+ 2ce:	|  |  |  |  |  |  |     ,--|--|--|--|--|--|--|-> lea 65d <main+0x5d1>,a1
+ 2d4:	|  |  |  |  |  |  |     |  |  |  |  |  |  |  |   movea.w #-1,a2
+ 2d8:	|  |  |  |  |  |  |     |  |  |  |  |  |  |  |   jsr -276(a6)
 			ReplyMsg((struct Message *)message);
- 2dc:	|  |  |  |  |  |  |  |     |  |  |  |  |  >--|-> movea.l 26e8 <SysBase>,a6
- 2e2:	|  |  |  |  |  |  |  |     |  |  |  |  |  |  |   movea.l a3,a1
- 2e4:	|  |  |  |  |  |  |  |     |  |  |  |  |  |  |   jsr -378(a6)
+ 2dc:	|  |  |  |  |  |  |     |  |  |  |  |  |  >--|-> movea.l 271e <SysBase>,a6
+ 2e2:	|  |  |  |  |  |  |     |  |  |  |  |  |  |  |   movea.l a3,a1
+ 2e4:	|  |  |  |  |  |  |     |  |  |  |  |  |  |  |   jsr -378(a6)
 		while ((message = (struct IntuiMessage *)GetMsg(window->UserPort))) {
- 2e8:	|  |  |  |  |  |  |  |     |  |  |  |  |  |  |   movea.l 26e8 <SysBase>,a6
- 2ee:	|  |  |  |  |  |  |  |     |  |  |  |  |  |  |   movea.l 86(a4),a0
- 2f2:	|  |  |  |  |  |  |  |     |  |  |  |  |  |  |   jsr -372(a6)
- 2f6:	|  |  |  |  |  |  |  |     |  |  |  |  |  |  |   movea.l d0,a3
- 2f8:	|  |  |  |  |  |  |  |     |  |  |  |  |  |  |   tst.l d0
- 2fa:	|  |  |  |  |  +--|--|-----|--|--|--|--|--|--|-- bne.w 1f6 <main+0x16a>
+ 2e8:	|  |  |  |  |  |  |     |  |  |  |  |  |  |  |   movea.l 271e <SysBase>,a6
+ 2ee:	|  |  |  |  |  |  |     |  |  |  |  |  |  |  |   movea.l 86(a4),a0
+ 2f2:	|  |  |  |  |  |  |     |  |  |  |  |  |  |  |   jsr -372(a6)
+ 2f6:	|  |  |  |  |  |  |     |  |  |  |  |  |  |  |   movea.l d0,a3
+ 2f8:	|  |  |  |  |  |  |     |  |  |  |  |  |  |  |   tst.l d0
+ 2fa:	|  |  |  |  |  +--|-----|--|--|--|--|--|--|--|-- bne.w 1f6 <main+0x16a>
 	while (!done) {
- 2fe:	|  |  |  |  |  |  |  |  ,--|--|--|--|--|--|--|-> tst.w d4
+ 2fe:	|  |  |  |  |  |  |  ,--|--|--|--|--|--|--|--|-> tst.w d4
  300:	|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  '-- beq.w 1c6 <main+0x13a>
 	CloseWindow(window);
- 304:	|  |  |  |  |  |  |  |  |  |  |  |  |  |  |      movea.l 26e0 <IntuitionBase>,a6
+ 304:	|  |  |  |  |  |  |  |  |  |  |  |  |  |  |      movea.l 2716 <IntuitionBase>,a6
  30a:	|  |  |  |  |  |  |  |  |  |  |  |  |  |  |      movea.l a4,a0
  30c:	|  |  |  |  |  |  |  |  |  |  |  |  |  |  |      jsr -72(a6)
 	// 	Write(Output(), (APTR)"This program was started from CLI/Shell.\n", 41);
@@ -317,16 +317,16 @@ int main() {
 
 	// Clean up libraries
 	CloseLibrary((struct Library*)GfxBase);
- 310:	|  |  |  |  |  |  |  |  |  |  '--|--|--|--|----> movea.l 26e8 <SysBase>,a6
- 316:	|  |  |  |  |  |  |  |  |  |     |  |  |  |      movea.l 26dc <GfxBase>,a1
+ 310:	|  |  |  |  |  |  |  |  |  |  '--|--|--|--|----> movea.l 271e <SysBase>,a6
+ 316:	|  |  |  |  |  |  |  |  |  |     |  |  |  |      movea.l 2712 <GfxBase>,a1
  31c:	|  |  |  |  |  |  |  |  |  |     |  |  |  |      jsr -414(a6)
 	CloseLibrary((struct Library*)IntuitionBase);
- 320:	|  |  |  |  |  |  |  |  |  |     |  |  |  |      movea.l 26e8 <SysBase>,a6
- 326:	|  |  |  |  |  |  |  |  |  |     |  |  |  |      movea.l 26e0 <IntuitionBase>,a1
+ 320:	|  |  |  |  |  |  |  |  |  |     |  |  |  |      movea.l 271e <SysBase>,a6
+ 326:	|  |  |  |  |  |  |  |  |  |     |  |  |  |      movea.l 2716 <IntuitionBase>,a1
  32c:	|  |  |  |  |  |  |  |  |  |     |  |  |  |      jsr -414(a6)
 	CloseLibrary((struct Library*)DOSBase);
- 330:	|  |  |  |  |  |  |  |  |  |     |  |  |  |      movea.l 26e8 <SysBase>,a6
- 336:	|  |  |  |  |  |  |  |  |  |     |  |  |  |      movea.l 26e4 <DOSBase>,a1
+ 330:	|  |  |  |  |  |  |  |  |  |     |  |  |  |      movea.l 271e <SysBase>,a6
+ 336:	|  |  |  |  |  |  |  |  |  |     |  |  |  |      movea.l 271a <DOSBase>,a1
  33c:	|  |  |  |  |  |  |  |  |  |     |  |  |  |      jsr -414(a6)
 	
 	return 0;
@@ -345,226 +345,245 @@ int main() {
  35e:	|  |  |  |  |  |  |  |  |  |     |  |            neg.w d0
  360:	|  |  |  |  |  |  |  |  |  |     |  |            or.w d0,d4
 			ReplyMsg((struct Message *)message);
- 362:	|  |  |  |  |  |  |  |  |  |     |  |            movea.l 26e8 <SysBase>,a6
+ 362:	|  |  |  |  |  |  |  |  |  |     |  |            movea.l 271e <SysBase>,a6
  368:	|  |  |  |  |  |  |  |  |  |     |  |            movea.l a3,a1
  36a:	|  |  |  |  |  |  |  |  |  |     |  |            jsr -378(a6)
 		while ((message = (struct IntuiMessage *)GetMsg(window->UserPort))) {
- 36e:	|  |  |  |  |  |  |  |  |  |     |  |            movea.l 26e8 <SysBase>,a6
+ 36e:	|  |  |  |  |  |  |  |  |  |     |  |            movea.l 271e <SysBase>,a6
  374:	|  |  |  |  |  |  |  |  |  |     |  |            movea.l 86(a4),a0
  378:	|  |  |  |  |  |  |  |  |  |     |  |            jsr -372(a6)
  37c:	|  |  |  |  |  |  |  |  |  |     |  |            movea.l d0,a3
  37e:	|  |  |  |  |  |  |  |  |  |     |  |            tst.l d0
  380:	|  |  |  |  |  +--|--|--|--|-----|--|----------- bne.w 1f6 <main+0x16a>
- 384:	|  |  |  |  |  |  |  |  +--|-----|--|----------- bra.w 2fe <main+0x272>
+ 384:	|  |  |  |  |  |  |  +--|--|-----|--|----------- bra.w 2fe <main+0x272>
 			switch (message->Class) {
  388:	|  |  |  |  |  |  |  |  |  |     |  '----------> moveq #1,d4
 			ReplyMsg((struct Message *)message);
- 38a:	|  |  |  |  |  |  |  |  |  |     |               movea.l 26e8 <SysBase>,a6
+ 38a:	|  |  |  |  |  |  |  |  |  |     |               movea.l 271e <SysBase>,a6
  390:	|  |  |  |  |  |  |  |  |  |     |               movea.l a3,a1
  392:	|  |  |  |  |  |  |  |  |  |     |               jsr -378(a6)
 		while ((message = (struct IntuiMessage *)GetMsg(window->UserPort))) {
- 396:	|  |  |  |  |  |  |  |  |  |     |               movea.l 26e8 <SysBase>,a6
+ 396:	|  |  |  |  |  |  |  |  |  |     |               movea.l 271e <SysBase>,a6
  39c:	|  |  |  |  |  |  |  |  |  |     |               movea.l 86(a4),a0
  3a0:	|  |  |  |  |  |  |  |  |  |     |               jsr -372(a6)
  3a4:	|  |  |  |  |  |  |  |  |  |     |               movea.l d0,a3
  3a6:	|  |  |  |  |  |  |  |  |  |     |               tst.l d0
  3a8:	|  |  |  |  |  +--|--|--|--|-----|-------------- bne.w 1f6 <main+0x16a>
- 3ac:	|  |  |  |  |  |  |  |  +--|-----|-------------- bra.w 2fe <main+0x272>
+ 3ac:	|  |  |  |  |  |  |  +--|--|-----|-------------- bra.w 2fe <main+0x272>
 					BeginRefresh(window);
- 3b0:	|  |  |  |  |  |  |  |  |  |     '-------------> movea.l 26e0 <IntuitionBase>,a6
+ 3b0:	|  |  |  |  |  |  |  |  |  |     '-------------> movea.l 2716 <IntuitionBase>,a6
  3b6:	|  |  |  |  |  |  |  |  |  |                     movea.l a4,a0
  3b8:	|  |  |  |  |  |  |  |  |  |                     jsr -354(a6)
 					if (isGreenBackground) {
- 3bc:	|  |  |  |  |  |  |  |  |  |                     tst.w 26da <isGreenBackground>
- 3c2:	|  |  |  |  |  |  |  |  |  |                 ,-- beq.s 412 <main+0x386>
+ 3bc:	|  |  |  |  |  |  |  |  |  |                     tst.w 2710 <isGreenBackground>
+ 3c2:	|  |  |  |  |  |  |  |  |  |                 ,-- beq.s 42c <main+0x3a0>
 						struct RastPort *rp = window->RPort;
  3c4:	|  |  |  |  |  |  |  |  |  |                 |   movea.l 50(a4),a2
-						SetAPen(rp, 2);  // Green pen
- 3c8:	|  |  |  |  |  |  |  |  |  |                 |   movea.l 26dc <GfxBase>,a6
- 3ce:	|  |  |  |  |  |  |  |  |  |                 |   movea.l a2,a1
- 3d0:	|  |  |  |  |  |  |  |  |  |                 |   moveq #2,d0
- 3d2:	|  |  |  |  |  |  |  |  |  |                 |   jsr -342(a6)
+						SetRGB4(&(window->WScreen->ViewPort), 2, 0, 15, 0);  // Bright green
+ 3c8:	|  |  |  |  |  |  |  |  |  |                 |   movea.l 2712 <GfxBase>,a6
+ 3ce:	|  |  |  |  |  |  |  |  |  |                 |   movea.w #44,a0
+ 3d2:	|  |  |  |  |  |  |  |  |  |                 |   adda.l 46(a4),a0
+ 3d6:	|  |  |  |  |  |  |  |  |  |                 |   moveq #2,d0
+ 3d8:	|  |  |  |  |  |  |  |  |  |                 |   moveq #0,d1
+ 3da:	|  |  |  |  |  |  |  |  |  |                 |   moveq #15,d2
+ 3dc:	|  |  |  |  |  |  |  |  |  |                 |   moveq #0,d3
+ 3de:	|  |  |  |  |  |  |  |  |  |                 |   jsr -288(a6)
+						SetAPen(rp, 2);  // Green pen (pen 2)
+ 3e2:	|  |  |  |  |  |  |  |  |  |                 |   movea.l 2712 <GfxBase>,a6
+ 3e8:	|  |  |  |  |  |  |  |  |  |                 |   movea.l a2,a1
+ 3ea:	|  |  |  |  |  |  |  |  |  |                 |   moveq #2,d0
+ 3ec:	|  |  |  |  |  |  |  |  |  |                 |   jsr -342(a6)
 						RectFill(rp, window->BorderLeft, window->BorderTop, 
- 3d6:	|  |  |  |  |  |  |  |  |  |                 |   move.b 54(a4),d0
- 3da:	|  |  |  |  |  |  |  |  |  |                 |   ext.w d0
- 3dc:	|  |  |  |  |  |  |  |  |  |                 |   move.b 55(a4),d1
- 3e0:	|  |  |  |  |  |  |  |  |  |                 |   ext.w d1
- 3e2:	|  |  |  |  |  |  |  |  |  |                 |   movea.w 8(a4),a0
- 3e6:	|  |  |  |  |  |  |  |  |  |                 |   move.b 56(a4),d3
- 3ea:	|  |  |  |  |  |  |  |  |  |                 |   ext.w d3
- 3ec:	|  |  |  |  |  |  |  |  |  |                 |   suba.w d3,a0
- 3ee:	|  |  |  |  |  |  |  |  |  |                 |   move.l a0,d2
- 3f0:	|  |  |  |  |  |  |  |  |  |                 |   movea.w 10(a4),a1
- 3f4:	|  |  |  |  |  |  |  |  |  |                 |   move.b 57(a4),d3
- 3f8:	|  |  |  |  |  |  |  |  |  |                 |   ext.w d3
- 3fa:	|  |  |  |  |  |  |  |  |  |                 |   suba.w d3,a1
- 3fc:	|  |  |  |  |  |  |  |  |  |                 |   move.l a1,d3
- 3fe:	|  |  |  |  |  |  |  |  |  |                 |   movea.l 26dc <GfxBase>,a6
- 404:	|  |  |  |  |  |  |  |  |  |                 |   movea.l a2,a1
- 406:	|  |  |  |  |  |  |  |  |  |                 |   ext.l d0
- 408:	|  |  |  |  |  |  |  |  |  |                 |   ext.l d1
- 40a:	|  |  |  |  |  |  |  |  |  |                 |   subq.l #1,d2
- 40c:	|  |  |  |  |  |  |  |  |  |                 |   subq.l #1,d3
- 40e:	|  |  |  |  |  |  |  |  |  |                 |   jsr -306(a6)
+ 3f0:	|  |  |  |  |  |  |  |  |  |                 |   move.b 54(a4),d0
+ 3f4:	|  |  |  |  |  |  |  |  |  |                 |   ext.w d0
+ 3f6:	|  |  |  |  |  |  |  |  |  |                 |   move.b 55(a4),d1
+ 3fa:	|  |  |  |  |  |  |  |  |  |                 |   ext.w d1
+ 3fc:	|  |  |  |  |  |  |  |  |  |                 |   movea.w 8(a4),a0
+ 400:	|  |  |  |  |  |  |  |  |  |                 |   move.b 56(a4),d3
+ 404:	|  |  |  |  |  |  |  |  |  |                 |   ext.w d3
+ 406:	|  |  |  |  |  |  |  |  |  |                 |   suba.w d3,a0
+ 408:	|  |  |  |  |  |  |  |  |  |                 |   move.l a0,d2
+ 40a:	|  |  |  |  |  |  |  |  |  |                 |   movea.w 10(a4),a1
+ 40e:	|  |  |  |  |  |  |  |  |  |                 |   move.b 57(a4),d3
+ 412:	|  |  |  |  |  |  |  |  |  |                 |   ext.w d3
+ 414:	|  |  |  |  |  |  |  |  |  |                 |   suba.w d3,a1
+ 416:	|  |  |  |  |  |  |  |  |  |                 |   move.l a1,d3
+ 418:	|  |  |  |  |  |  |  |  |  |                 |   movea.l 2712 <GfxBase>,a6
+ 41e:	|  |  |  |  |  |  |  |  |  |                 |   movea.l a2,a1
+ 420:	|  |  |  |  |  |  |  |  |  |                 |   ext.l d0
+ 422:	|  |  |  |  |  |  |  |  |  |                 |   ext.l d1
+ 424:	|  |  |  |  |  |  |  |  |  |                 |   subq.l #1,d2
+ 426:	|  |  |  |  |  |  |  |  |  |                 |   subq.l #1,d3
+ 428:	|  |  |  |  |  |  |  |  |  |                 |   jsr -306(a6)
 	struct RastPort *rp = window->RPort;
- 412:	|  |  |  |  |  |  |  |  |  |                 '-> movea.l 50(a4),a2
+ 42c:	|  |  |  |  |  |  |  |  |  |                 '-> movea.l 50(a4),a2
 	SetAPen(rp, 3);
- 416:	|  |  |  |  |  |  |  |  |  |                     movea.l 26dc <GfxBase>,a6
- 41c:	|  |  |  |  |  |  |  |  |  |                     movea.l a2,a1
- 41e:	|  |  |  |  |  |  |  |  |  |                     moveq #3,d0
- 420:	|  |  |  |  |  |  |  |  |  |                     jsr -342(a6)
+ 430:	|  |  |  |  |  |  |  |  |  |                     movea.l 2712 <GfxBase>,a6
+ 436:	|  |  |  |  |  |  |  |  |  |                     movea.l a2,a1
+ 438:	|  |  |  |  |  |  |  |  |  |                     moveq #3,d0
+ 43a:	|  |  |  |  |  |  |  |  |  |                     jsr -342(a6)
 	RectFill(rp, 101, 61, 298, 89);
- 424:	|  |  |  |  |  |  |  |  |  |                     movea.l 26dc <GfxBase>,a6
- 42a:	|  |  |  |  |  |  |  |  |  |                     movea.l a2,a1
- 42c:	|  |  |  |  |  |  |  |  |  |                     moveq #101,d0
- 42e:	|  |  |  |  |  |  |  |  |  |                     moveq #61,d1
- 430:	|  |  |  |  |  |  |  |  |  |                     move.l d5,d2
- 432:	|  |  |  |  |  |  |  |  |  |                     moveq #89,d3
- 434:	|  |  |  |  |  |  |  |  |  |                     jsr -306(a6)
+ 43e:	|  |  |  |  |  |  |  |  |  |                     movea.l 2712 <GfxBase>,a6
+ 444:	|  |  |  |  |  |  |  |  |  |                     movea.l a2,a1
+ 446:	|  |  |  |  |  |  |  |  |  |                     moveq #101,d0
+ 448:	|  |  |  |  |  |  |  |  |  |                     moveq #61,d1
+ 44a:	|  |  |  |  |  |  |  |  |  |                     move.l d5,d2
+ 44c:	|  |  |  |  |  |  |  |  |  |                     moveq #89,d3
+ 44e:	|  |  |  |  |  |  |  |  |  |                     jsr -306(a6)
 	SetAPen(rp, 1);
- 438:	|  |  |  |  |  |  |  |  |  |                     movea.l 26dc <GfxBase>,a6
- 43e:	|  |  |  |  |  |  |  |  |  |                     movea.l a2,a1
- 440:	|  |  |  |  |  |  |  |  |  |                     moveq #1,d0
- 442:	|  |  |  |  |  |  |  |  |  |                     jsr -342(a6)
+ 452:	|  |  |  |  |  |  |  |  |  |                     movea.l 2712 <GfxBase>,a6
+ 458:	|  |  |  |  |  |  |  |  |  |                     movea.l a2,a1
+ 45a:	|  |  |  |  |  |  |  |  |  |                     moveq #1,d0
+ 45c:	|  |  |  |  |  |  |  |  |  |                     jsr -342(a6)
 	RefreshGadgets(&colorButton, window, NULL);
- 446:	|  |  |  |  |  |  |  |  |  |                     movea.l 26e0 <IntuitionBase>,a6
- 44c:	|  |  |  |  |  |  |  |  |  |                     movea.l d6,a0
- 44e:	|  |  |  |  |  |  |  |  |  |                     movea.l a4,a1
- 450:	|  |  |  |  |  |  |  |  |  |                     suba.l a2,a2
- 452:	|  |  |  |  |  |  |  |  |  |                     jsr -222(a6)
+ 460:	|  |  |  |  |  |  |  |  |  |                     movea.l 2716 <IntuitionBase>,a6
+ 466:	|  |  |  |  |  |  |  |  |  |                     movea.l d6,a0
+ 468:	|  |  |  |  |  |  |  |  |  |                     movea.l a4,a1
+ 46a:	|  |  |  |  |  |  |  |  |  |                     suba.l a2,a2
+ 46c:	|  |  |  |  |  |  |  |  |  |                     jsr -222(a6)
 					EndRefresh(window, TRUE);
- 456:	|  |  |  |  |  |  |  |  |  |                     movea.l 26e0 <IntuitionBase>,a6
- 45c:	|  |  |  |  |  |  |  |  |  |                     movea.l a4,a0
- 45e:	|  |  |  |  |  |  |  |  |  |                     moveq #1,d0
- 460:	|  |  |  |  |  |  |  |  |  |                     jsr -366(a6)
+ 470:	|  |  |  |  |  |  |  |  |  |                     movea.l 2716 <IntuitionBase>,a6
+ 476:	|  |  |  |  |  |  |  |  |  |                     movea.l a4,a0
+ 478:	|  |  |  |  |  |  |  |  |  |                     moveq #1,d0
+ 47a:	|  |  |  |  |  |  |  |  |  |                     jsr -366(a6)
 			ReplyMsg((struct Message *)message);
- 464:	|  |  |  |  |  |  |  |  |  |                     movea.l 26e8 <SysBase>,a6
- 46a:	|  |  |  |  |  |  |  |  |  |                     movea.l a3,a1
- 46c:	|  |  |  |  |  |  |  |  |  |                     jsr -378(a6)
+ 47e:	|  |  |  |  |  |  |  |  |  |                     movea.l 271e <SysBase>,a6
+ 484:	|  |  |  |  |  |  |  |  |  |                     movea.l a3,a1
+ 486:	|  |  |  |  |  |  |  |  |  |                     jsr -378(a6)
 		while ((message = (struct IntuiMessage *)GetMsg(window->UserPort))) {
- 470:	|  |  |  |  |  |  |  |  |  |                     movea.l 26e8 <SysBase>,a6
- 476:	|  |  |  |  |  |  |  |  |  |                     movea.l 86(a4),a0
- 47a:	|  |  |  |  |  |  |  |  |  |                     jsr -372(a6)
- 47e:	|  |  |  |  |  |  |  |  |  |                     movea.l d0,a3
- 480:	|  |  |  |  |  |  |  |  |  |                     tst.l d0
- 482:	|  |  |  |  |  +--|--|--|--|-------------------- bne.w 1f6 <main+0x16a>
- 486:	|  |  |  |  |  |  |  |  +--|-------------------- bra.w 2fe <main+0x272>
-		SetAPen(rp, 2);  // Green pen in default Workbench palette
- 48a:	|  |  |  |  |  |  |  '--|--|-------------------> moveq #2,d0
- 48c:	|  |  |  |  |  |  |     |  |                     jsr -342(a6)
- 490:	|  |  |  |  |  |  |     |  |                     moveq #1,d0
+ 48a:	|  |  |  |  |  |  |  |  |  |                     movea.l 271e <SysBase>,a6
+ 490:	|  |  |  |  |  |  |  |  |  |                     movea.l 86(a4),a0
+ 494:	|  |  |  |  |  |  |  |  |  |                     jsr -372(a6)
+ 498:	|  |  |  |  |  |  |  |  |  |                     movea.l d0,a3
+ 49a:	|  |  |  |  |  |  |  |  |  |                     tst.l d0
+ 49c:	|  |  |  |  |  +--|--|--|--|-------------------- bne.w 1f6 <main+0x16a>
+ 4a0:	|  |  |  |  |  |  |  +--|--|-------------------- bra.w 2fe <main+0x272>
+		SetRGB4(&(window->WScreen->ViewPort), 2, 0, 15, 0);  // Set pen 2 to bright green
+ 4a4:	|  |  |  |  |  |  |  |  |  '-------------------> movea.w #44,a0
+ 4a8:	|  |  |  |  |  |  |  |  |                        adda.l 46(a4),a0
+ 4ac:	|  |  |  |  |  |  |  |  |                        moveq #2,d0
+ 4ae:	|  |  |  |  |  |  |  |  |                        moveq #0,d1
+ 4b0:	|  |  |  |  |  |  |  |  |                        moveq #15,d2
+ 4b2:	|  |  |  |  |  |  |  |  |                        moveq #0,d3
+ 4b4:	|  |  |  |  |  |  |  |  |                        jsr -288(a6)
+		SetAPen(rp, 2);  // Use pen 2 for green background
+ 4b8:	|  |  |  |  |  |  |  |  |                        movea.l 2712 <GfxBase>,a6
+ 4be:	|  |  |  |  |  |  |  |  |                        movea.l a2,a1
+ 4c0:	|  |  |  |  |  |  |  |  |                        moveq #2,d0
+ 4c2:	|  |  |  |  |  |  |  |  |                        jsr -342(a6)
+ 4c6:	|  |  |  |  |  |  |  |  |                        moveq #1,d0
 		isGreenBackground = FALSE;
- 492:	|  |  |  |  |  |  |     |  |                     move.w d0,26da <isGreenBackground>
+ 4c8:	|  |  |  |  |  |  |  |  |                        move.w d0,2710 <isGreenBackground>
 	RectFill(rp, window->BorderLeft, window->BorderTop, 
- 498:	|  |  |  |  |  |  |     |  |                     move.b 54(a4),d0
- 49c:	|  |  |  |  |  |  |     |  |                     ext.w d0
- 49e:	|  |  |  |  |  |  |     |  |                     move.b 55(a4),d1
- 4a2:	|  |  |  |  |  |  |     |  |                     ext.w d1
- 4a4:	|  |  |  |  |  |  |     |  |                     movea.w 8(a4),a0
- 4a8:	|  |  |  |  |  |  |     |  |                     move.b 56(a4),d3
- 4ac:	|  |  |  |  |  |  |     |  |                     ext.w d3
- 4ae:	|  |  |  |  |  |  |     |  |                     suba.w d3,a0
- 4b0:	|  |  |  |  |  |  |     |  |                     move.l a0,d2
- 4b2:	|  |  |  |  |  |  |     |  |                     movea.w 10(a4),a1
- 4b6:	|  |  |  |  |  |  |     |  |                     move.b 57(a4),d3
- 4ba:	|  |  |  |  |  |  |     |  |                     ext.w d3
- 4bc:	|  |  |  |  |  |  |     |  |                     suba.w d3,a1
- 4be:	|  |  |  |  |  |  |     |  |                     move.l a1,d3
- 4c0:	|  |  |  |  |  |  |     |  |                     movea.l 26dc <GfxBase>,a6
- 4c6:	|  |  |  |  |  |  |     |  |                     movea.l a2,a1
- 4c8:	|  |  |  |  |  |  |     |  |                     ext.l d0
- 4ca:	|  |  |  |  |  |  |     |  |                     ext.l d1
- 4cc:	|  |  |  |  |  |  |     |  |                     subq.l #1,d2
- 4ce:	|  |  |  |  |  |  |     |  |                     subq.l #1,d3
- 4d0:	|  |  |  |  |  |  |     |  |                     jsr -306(a6)
+ 4ce:	|  |  |  |  |  |  |  |  |                        move.b 54(a4),d0
+ 4d2:	|  |  |  |  |  |  |  |  |                        ext.w d0
+ 4d4:	|  |  |  |  |  |  |  |  |                        move.b 55(a4),d1
+ 4d8:	|  |  |  |  |  |  |  |  |                        ext.w d1
+ 4da:	|  |  |  |  |  |  |  |  |                        movea.w 8(a4),a0
+ 4de:	|  |  |  |  |  |  |  |  |                        move.b 56(a4),d3
+ 4e2:	|  |  |  |  |  |  |  |  |                        ext.w d3
+ 4e4:	|  |  |  |  |  |  |  |  |                        suba.w d3,a0
+ 4e6:	|  |  |  |  |  |  |  |  |                        move.l a0,d2
+ 4e8:	|  |  |  |  |  |  |  |  |                        movea.w 10(a4),a1
+ 4ec:	|  |  |  |  |  |  |  |  |                        move.b 57(a4),d3
+ 4f0:	|  |  |  |  |  |  |  |  |                        ext.w d3
+ 4f2:	|  |  |  |  |  |  |  |  |                        suba.w d3,a1
+ 4f4:	|  |  |  |  |  |  |  |  |                        move.l a1,d3
+ 4f6:	|  |  |  |  |  |  |  |  |                        movea.l 2712 <GfxBase>,a6
+ 4fc:	|  |  |  |  |  |  |  |  |                        movea.l a2,a1
+ 4fe:	|  |  |  |  |  |  |  |  |                        ext.l d0
+ 500:	|  |  |  |  |  |  |  |  |                        ext.l d1
+ 502:	|  |  |  |  |  |  |  |  |                        subq.l #1,d2
+ 504:	|  |  |  |  |  |  |  |  |                        subq.l #1,d3
+ 506:	|  |  |  |  |  |  |  |  |                        jsr -306(a6)
 	struct RastPort *rp = window->RPort;
- 4d4:	|  |  |  |  |  |  |     |  |                     movea.l 50(a4),a2
+ 50a:	|  |  |  |  |  |  |  |  |                        movea.l 50(a4),a2
 	SetAPen(rp, 3);
- 4d8:	|  |  |  |  |  |  |     |  |                     movea.l 26dc <GfxBase>,a6
- 4de:	|  |  |  |  |  |  |     |  |                     movea.l a2,a1
- 4e0:	|  |  |  |  |  |  |     |  |                     moveq #3,d0
- 4e2:	|  |  |  |  |  |  |     |  |                     jsr -342(a6)
+ 50e:	|  |  |  |  |  |  |  |  |                        movea.l 2712 <GfxBase>,a6
+ 514:	|  |  |  |  |  |  |  |  |                        movea.l a2,a1
+ 516:	|  |  |  |  |  |  |  |  |                        moveq #3,d0
+ 518:	|  |  |  |  |  |  |  |  |                        jsr -342(a6)
 	RectFill(rp, 101, 61, 298, 89);
- 4e6:	|  |  |  |  |  |  |     |  |                     movea.l 26dc <GfxBase>,a6
- 4ec:	|  |  |  |  |  |  |     |  |                     movea.l a2,a1
- 4ee:	|  |  |  |  |  |  |     |  |                     moveq #101,d0
- 4f0:	|  |  |  |  |  |  |     |  |                     moveq #61,d1
- 4f2:	|  |  |  |  |  |  |     |  |                     move.l d5,d2
- 4f4:	|  |  |  |  |  |  |     |  |                     moveq #89,d3
- 4f6:	|  |  |  |  |  |  |     |  |                     jsr -306(a6)
+ 51c:	|  |  |  |  |  |  |  |  |                        movea.l 2712 <GfxBase>,a6
+ 522:	|  |  |  |  |  |  |  |  |                        movea.l a2,a1
+ 524:	|  |  |  |  |  |  |  |  |                        moveq #101,d0
+ 526:	|  |  |  |  |  |  |  |  |                        moveq #61,d1
+ 528:	|  |  |  |  |  |  |  |  |                        move.l d5,d2
+ 52a:	|  |  |  |  |  |  |  |  |                        moveq #89,d3
+ 52c:	|  |  |  |  |  |  |  |  |                        jsr -306(a6)
 	SetAPen(rp, 1);
- 4fa:	|  |  |  |  |  |  |     |  |                     movea.l 26dc <GfxBase>,a6
- 500:	|  |  |  |  |  |  |     |  |                     movea.l a2,a1
- 502:	|  |  |  |  |  |  |     |  |                     moveq #1,d0
- 504:	|  |  |  |  |  |  |     |  |                     jsr -342(a6)
+ 530:	|  |  |  |  |  |  |  |  |                        movea.l 2712 <GfxBase>,a6
+ 536:	|  |  |  |  |  |  |  |  |                        movea.l a2,a1
+ 538:	|  |  |  |  |  |  |  |  |                        moveq #1,d0
+ 53a:	|  |  |  |  |  |  |  |  |                        jsr -342(a6)
 	RefreshGadgets(&colorButton, window, NULL);
- 508:	|  |  |  |  |  |  |     |  |                     movea.l 26e0 <IntuitionBase>,a6
- 50e:	|  |  |  |  |  |  |     |  |                     movea.l d6,a0
- 510:	|  |  |  |  |  |  |     |  |                     movea.l a4,a1
- 512:	|  |  |  |  |  |  |     |  |                     suba.l a2,a2
- 514:	|  |  |  |  |  |  |     |  |                     jsr -222(a6)
+ 53e:	|  |  |  |  |  |  |  |  |                        movea.l 2716 <IntuitionBase>,a6
+ 544:	|  |  |  |  |  |  |  |  |                        movea.l d6,a0
+ 546:	|  |  |  |  |  |  |  |  |                        movea.l a4,a1
+ 548:	|  |  |  |  |  |  |  |  |                        suba.l a2,a2
+ 54a:	|  |  |  |  |  |  |  |  |                        jsr -222(a6)
 						SetWindowTitles(window, (UBYTE *)"AMIGA SANDBOX - Green Background", (UBYTE *)-1);
- 518:	|  |  |  |  |  |  |     |  |                     movea.l 26e0 <IntuitionBase>,a6
- 51e:	|  |  |  |  |  |  |     |  |                     movea.l a4,a0
+ 54e:	|  |  |  |  |  |  |  |  |                        movea.l 2716 <IntuitionBase>,a6
+ 554:	|  |  |  |  |  |  |  |  |                        movea.l a4,a0
 					if (isGreenBackground) {
- 520:	|  |  |  |  |  |  |     |  |                     tst.w 26da <isGreenBackground>
- 526:	|  |  |  |  |  |  |     |  '-------------------- bne.w 2ce <main+0x242>
-						SetWindowTitles(window, (UBYTE *)"AMIGA SANDBOX - White Background", (UBYTE *)-1);
- 52a:	|  |  |  |  |  |  '-----|----------------------> movea.l a5,a1
- 52c:	|  |  |  |  |  |        |                        movea.w #-1,a2
- 530:	|  |  |  |  |  |        |                        jsr -276(a6)
+ 556:	|  |  |  |  |  |  |  |  |                        tst.w 2710 <isGreenBackground>
+ 55c:	|  |  |  |  |  |  |  |  '----------------------- bne.w 2ce <main+0x242>
+						SetWindowTitles(window, (UBYTE *)"AMIGA SANDBOX - Blue Background", (UBYTE *)-1);
+ 560:	|  |  |  |  |  |  '--|-------------------------> movea.l a5,a1
+ 562:	|  |  |  |  |  |     |                           movea.w #-1,a2
+ 566:	|  |  |  |  |  |     |                           jsr -276(a6)
 			ReplyMsg((struct Message *)message);
- 534:	|  |  |  |  |  |        |                        movea.l 26e8 <SysBase>,a6
- 53a:	|  |  |  |  |  |        |                        movea.l a3,a1
- 53c:	|  |  |  |  |  |        |                        jsr -378(a6)
+ 56a:	|  |  |  |  |  |     |                           movea.l 271e <SysBase>,a6
+ 570:	|  |  |  |  |  |     |                           movea.l a3,a1
+ 572:	|  |  |  |  |  |     |                           jsr -378(a6)
 		while ((message = (struct IntuiMessage *)GetMsg(window->UserPort))) {
- 540:	|  |  |  |  |  |        |                        movea.l 26e8 <SysBase>,a6
- 546:	|  |  |  |  |  |        |                        movea.l 86(a4),a0
- 54a:	|  |  |  |  |  |        |                        jsr -372(a6)
- 54e:	|  |  |  |  |  |        |                        movea.l d0,a3
- 550:	|  |  |  |  |  |        |                        tst.l d0
- 552:	|  |  |  |  |  '--------|----------------------- bne.w 1f6 <main+0x16a>
- 556:	|  |  |  |  |           '----------------------- bra.w 2fe <main+0x272>
+ 576:	|  |  |  |  |  |     |                           movea.l 271e <SysBase>,a6
+ 57c:	|  |  |  |  |  |     |                           movea.l 86(a4),a0
+ 580:	|  |  |  |  |  |     |                           jsr -372(a6)
+ 584:	|  |  |  |  |  |     |                           movea.l d0,a3
+ 586:	|  |  |  |  |  |     |                           tst.l d0
+ 588:	|  |  |  |  |  '-----|-------------------------- bne.w 1f6 <main+0x16a>
+ 58c:	|  |  |  |  |        '-------------------------- bra.w 2fe <main+0x272>
 		CloseLibrary((struct Library*)IntuitionBase);
- 55a:	|  |  |  >--|----------------------------------> movea.l 26e8 <SysBase>,a6
- 560:	|  |  |  |  |                                    movea.l 26e0 <IntuitionBase>,a1
- 566:	|  |  |  |  |                                    jsr -414(a6)
+ 590:	|  |  |  >--|----------------------------------> movea.l 271e <SysBase>,a6
+ 596:	|  |  |  |  |                                    movea.l 2716 <IntuitionBase>,a1
+ 59c:	|  |  |  |  |                                    jsr -414(a6)
 		CloseLibrary((struct Library*)DOSBase);
- 56a:	|  |  |  |  |                                    movea.l 26e8 <SysBase>,a6
- 570:	|  |  |  |  |                                    movea.l 26e4 <DOSBase>,a1
- 576:	|  |  |  |  |                                    jsr -414(a6)
+ 5a0:	|  |  |  |  |                                    movea.l 271e <SysBase>,a6
+ 5a6:	|  |  |  |  |                                    movea.l 271a <DOSBase>,a1
+ 5ac:	|  |  |  |  |                                    jsr -414(a6)
 		Exit(0);
- 57a:	|  |  |  |  |                                    movea.l 26e4 <DOSBase>,a6
- 580:	|  |  |  |  |                                    moveq #0,d1
- 582:	|  |  |  |  |                                    jsr -144(a6)
- 586:	|  |  |  |  +----------------------------------- bra.w ec <main+0x60>
+ 5b0:	|  |  |  |  |                                    movea.l 271a <DOSBase>,a6
+ 5b6:	|  |  |  |  |                                    moveq #0,d1
+ 5b8:	|  |  |  |  |                                    jsr -144(a6)
+ 5bc:	|  |  |  |  +----------------------------------- bra.w ec <main+0x60>
 		CloseLibrary((struct Library*)DOSBase);
- 58a:	>--|--|--|--|----------------------------------> movea.l 26e8 <SysBase>,a6
- 590:	|  |  |  |  |                                    movea.l 26e4 <DOSBase>,a1
- 596:	|  |  |  |  |                                    jsr -414(a6)
+ 5c0:	>--|--|--|--|----------------------------------> movea.l 271e <SysBase>,a6
+ 5c6:	|  |  |  |  |                                    movea.l 271a <DOSBase>,a1
+ 5cc:	|  |  |  |  |                                    jsr -414(a6)
 		Exit(0);
- 59a:	|  |  |  |  |                                    movea.l 26e4 <DOSBase>,a6
- 5a0:	|  |  |  |  |                                    moveq #0,d1
- 5a2:	|  |  |  |  |                                    jsr -144(a6)
+ 5d0:	|  |  |  |  |                                    movea.l 271a <DOSBase>,a6
+ 5d6:	|  |  |  |  |                                    moveq #0,d1
+ 5d8:	|  |  |  |  |                                    jsr -144(a6)
 	GfxBase = (struct GfxBase*)OpenLibrary((CONST_STRPTR)"graphics.library", 0);
- 5a6:	|  |  |  |  |                                    movea.l 26e8 <SysBase>,a6
- 5ac:	|  |  |  |  |                                    lea 608 <main+0x57c>,a1
- 5b2:	|  |  |  |  |                                    moveq #0,d0
- 5b4:	|  |  |  |  |                                    jsr -552(a6)
- 5b8:	|  |  |  |  |                                    move.l d0,26dc <GfxBase>
+ 5dc:	|  |  |  |  |                                    movea.l 271e <SysBase>,a6
+ 5e2:	|  |  |  |  |                                    lea 63e <main+0x5b2>,a1
+ 5e8:	|  |  |  |  |                                    moveq #0,d0
+ 5ea:	|  |  |  |  |                                    jsr -552(a6)
+ 5ee:	|  |  |  |  |                                    move.l d0,2712 <GfxBase>
 	if (!GfxBase) {
- 5be:	|  |  |  |  '----------------------------------- bne.w ec <main+0x60>
- 5c2:	|  |  |  '-------------------------------------- bra.s 55a <main+0x4ce>
+ 5f4:	|  |  |  |  '----------------------------------- bne.w ec <main+0x60>
+ 5f8:	|  |  |  '-------------------------------------- bra.s 590 <main+0x504>
 		Exit(0);
- 5c4:	|  |  '----------------------------------------> suba.l a6,a6
- 5c6:	|  |                                             moveq #0,d1
- 5c8:	|  |                                             jsr -144(a6)
+ 5fa:	|  |  '----------------------------------------> suba.l a6,a6
+ 5fc:	|  |                                             moveq #0,d1
+ 5fe:	|  |                                             jsr -144(a6)
 	IntuitionBase = (struct IntuitionBase*)OpenLibrary((CONST_STRPTR)"intuition.library", 0);
- 5cc:	|  |                                             movea.l 26e8 <SysBase>,a6
- 5d2:	|  |                                             lea 5f6 <main+0x56a>,a1
- 5d8:	|  |                                             moveq #0,d0
- 5da:	|  |                                             jsr -552(a6)
- 5de:	|  |                                             move.l d0,26e0 <IntuitionBase>
+ 602:	|  |                                             movea.l 271e <SysBase>,a6
+ 608:	|  |                                             lea 62c <main+0x5a0>,a1
+ 60e:	|  |                                             moveq #0,d0
+ 610:	|  |                                             jsr -552(a6)
+ 614:	|  |                                             move.l d0,2716 <IntuitionBase>
 	if (!IntuitionBase) {
- 5e4:	|  '-------------------------------------------- bne.w d0 <main+0x44>
- 5e8:	'----------------------------------------------- bra.s 58a <main+0x4fe>
+ 61a:	|  '-------------------------------------------- bne.w d0 <main+0x44>
+ 61e:	'----------------------------------------------- bra.s 5c0 <main+0x534>
