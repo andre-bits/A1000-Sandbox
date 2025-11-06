@@ -32,7 +32,7 @@ struct Border buttonBorder = {
 
 // Simple gadget structures for our button
 struct IntuiText buttonText = {
-	1, 0,           // FrontPen, BackPen (black on white)
+	2, 3,           // FrontPen (dark blue=2), BackPen (orange=3)
 	JAM2,           // DrawMode
 	42, 12,          // LeftEdge, TopEdge (perfectly centered in 200px wide button)
 	NULL,           // ITextFont (use default)
@@ -60,6 +60,24 @@ struct Gadget colorButton = {
 BOOL IsWorkbenchStartup() {
 	struct Process *proc = (struct Process *)FindTask(NULL);
 	return (proc->pr_CLI == 0);
+}
+
+// Function to draw orange button background
+void DrawButtonBackground(struct Window *window) {
+	struct RastPort *rp = window->RPort;
+	
+	// Set orange pen (color 3 in default Workbench palette)
+	SetAPen(rp, 3);
+	
+	// Draw filled rectangle for button background
+	// Button is at position (100, 60) with size 200x30
+	RectFill(rp, 101, 61, 298, 89);
+	
+	// Reset pen to black for other drawing
+	SetAPen(rp, 1);
+	
+	// Now refresh the gadget to draw on top of the background
+	RefreshGadgets(&colorButton, window, NULL);
 }
 
 
@@ -97,6 +115,9 @@ void WorkbenchMode() {
 		return;
 	}
 	
+	// Draw the initial orange button background
+	DrawButtonBackground(window);
+	
 	// Event loop
 	while (!done) {
 		Wait(1L << window->UserPort->mp_SigBit);
@@ -120,6 +141,7 @@ void WorkbenchMode() {
 				case REFRESHWINDOW:
 					// Redraw the window contents
 					BeginRefresh(window);
+					DrawButtonBackground(window);  // Draw orange button background
 					EndRefresh(window, TRUE);
 					break;
 			}
