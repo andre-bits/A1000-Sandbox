@@ -13,6 +13,9 @@ struct DosLibrary *DOSBase;
 struct IntuitionBase *IntuitionBase;
 struct GfxBase *GfxBase;
 
+// Global variable to track current background color
+BOOL isGreenBackground = FALSE;
+
 // Border data for button outline (bigger button: 140x25)
 SHORT buttonBorderData[] = {
 	0, 0,           // Start point
@@ -80,6 +83,31 @@ void DrawButtonBackground(struct Window *window) {
 	RefreshGadgets(&colorButton, window, NULL);
 }
 
+// Function to change the window background color
+void ChangeWindowBackground(struct Window *window) {
+	struct RastPort *rp = window->RPort;
+	
+	// Toggle background color between white and green
+	if (isGreenBackground) {
+		// Change back to white (default window background)
+		SetAPen(rp, 0);  // White pen (background color)
+		isGreenBackground = FALSE;
+	} else {
+		// Change to green
+		SetAPen(rp, 2);  // Green pen in default Workbench palette
+		isGreenBackground = TRUE;
+	}
+	
+	// Fill only the inner client area of the window (not borders/title bar)
+	// Start from the window's inner area and avoid the gadget area
+	RectFill(rp, window->BorderLeft, window->BorderTop, 
+	         window->Width - window->BorderRight - 1, 
+	         window->Height - window->BorderBottom - 1);
+	
+	// Redraw the button background to maintain its orange color
+	DrawButtonBackground(window);
+}
+
 
 
 // Function to create and manage Workbench window
@@ -133,14 +161,29 @@ void WorkbenchMode() {
 					}
 					break;
 				case GADGETUP:
-					// Button was clicked! For now, just flash the title
-					SetWindowTitles(window, (UBYTE *)"Button Clicked!", (UBYTE *)-1);
-					Delay(30); // Brief delay
-					SetWindowTitles(window, (UBYTE *)"AMIGA SANDBOX", (UBYTE *)-1);
+					// Button was clicked! Change the window background color
+					ChangeWindowBackground(window);
+					
+					// Update window title to reflect current state
+					if (isGreenBackground) {
+						SetWindowTitles(window, (UBYTE *)"AMIGA SANDBOX - Green Background", (UBYTE *)-1);
+					} else {
+						SetWindowTitles(window, (UBYTE *)"AMIGA SANDBOX - White Background", (UBYTE *)-1);
+					}
 					break;
 				case REFRESHWINDOW:
 					// Redraw the window contents
 					BeginRefresh(window);
+					
+					// Restore the current background color in the client area only
+					if (isGreenBackground) {
+						struct RastPort *rp = window->RPort;
+						SetAPen(rp, 2);  // Green pen
+						RectFill(rp, window->BorderLeft, window->BorderTop, 
+						         window->Width - window->BorderRight - 1, 
+						         window->Height - window->BorderBottom - 1);
+					}
+					
 					DrawButtonBackground(window);  // Draw orange button background
 					EndRefresh(window, TRUE);
 					break;
