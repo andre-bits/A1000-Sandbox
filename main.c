@@ -13,59 +13,69 @@ struct DosLibrary *DOSBase;
 struct IntuitionBase *IntuitionBase;
 struct GfxBase *GfxBase;
 
-// Global variable to track current background color
+/**
+ * Coordinates data for button border.
+ */
+SHORT buttonBorderData[] = {
+	0, 0,
+	199, 0,
+	199, 29,
+	0, 29,
+	0, 0
+};
+
+/**
+ * Declare a button border.
+ */
+struct Border buttonBorder = {
+	0, 0,
+	1, 0, JAM1,
+	5,
+	buttonBorderData,
+	NULL
+};
+
+/**
+ * Declare a button text.
+ */
+struct IntuiText buttonText = {
+	1, 3,
+	JAM2,
+	42, 12,
+	NULL,
+	(UBYTE *) "Change Color",
+	NULL
+};
+
+/**
+ * Declare a button gadget.
+ */
+struct Gadget colorButton = {
+	NULL,
+	100, 60,
+	200, 30,
+	GADGHCOMP,
+	RELVERIFY,
+	BOOLGADGET,
+	(APTR)&buttonBorder,
+	NULL,
+	&buttonText,
+	0,
+	NULL,
+	1,
+	NULL
+};
+
 BOOL isGreenBackground = FALSE;
 
-// Border data for button outline (bigger button: 140x25)
-SHORT buttonBorderData[] = {
-	0, 0,           // Start point
-	199, 0,         // Top line
-	199, 29,        // Right line  
-	0, 29,          // Bottom line
-	0, 0            // Back to start
-};
-
-struct Border buttonBorder = {
-	0, 0,           // LeftEdge, TopEdge
-	1, 0, JAM1,     // FrontPen, BackPen, DrawMode
-	5,              // Count (number of coordinate pairs)
-	buttonBorderData, // XY coordinate data
-	NULL            // NextBorder
-};
-
-// Simple gadget structures for our button
-struct IntuiText buttonText = {
-	1, 3,           // FrontPen (black=1), BackPen (orange=3)
-	JAM2,           // DrawMode
-	42, 12,          // LeftEdge, TopEdge (perfectly centered in 200px wide button)
-	NULL,           // ITextFont (use default)
-	(UBYTE *)"Change Color", // IText
-	NULL            // NextText
-};
-
-struct Gadget colorButton = {
-	NULL,               // NextGadget
-	100, 60,            // LeftEdge, TopEdge (centered horizontally and moved up)
-	200, 30,            // Width, Height (bigger button)
-	GADGHCOMP,          // Flags (highlight when selected)
-	RELVERIFY,          // Activation (release to verify)
-	BOOLGADGET,         // GadgetType
-	(APTR)&buttonBorder, // GadgetRender (our border)
-	NULL,               // SelectRender
-	&buttonText,        // GadgetText
-	0,                  // MutualExclude
-	NULL,               // SpecialInfo
-	1,                  // GadgetID
-	NULL                // UserData
-};
-
-// Function to detect if started from Workbench
 BOOL IsWorkbenchStartup() {
 	struct Process *proc = (struct Process *)FindTask(NULL);
 	return (proc->pr_CLI == 0);
 }
 
-// Function to draw orange button background
+/**
+ * Function to draw the button background. 
+ */
 void DrawButtonBackground(struct Window *window) {
 	struct RastPort *rp = window->RPort;
 	
@@ -73,45 +83,45 @@ void DrawButtonBackground(struct Window *window) {
 	SetAPen(rp, 3);
 	
 	// Draw filled rectangle for button background
-	// Button is at position (100, 60) with size 200x30
 	RectFill(rp, 101, 61, 298, 89);
 	
 	// Reset pen to black for other drawing
 	SetAPen(rp, 1);
 	
-	// Now refresh the gadget to draw on top of the background
+	// Refresh the gadget to draw on top of the background
 	RefreshGadgets(&colorButton, window, NULL);
 }
 
-// Function to change the window background color
+/**
+ * Changes the intuition window background color.
+ */
 void ChangeWindowBackground(struct Window *window) {
 	struct RastPort *rp = window->RPort;
 	
-	// Toggle background color between blue and green using existing palette colors
 	if (isGreenBackground) {
-		// Change to blue background (default Workbench color scheme)
-		SetAPen(rp, 1);  // Blue pen (typically dark blue in Workbench)
+		SetAPen(rp, 1);  // Blue pen
 		isGreenBackground = FALSE;
 	} else {
-		// Change to green using existing pen 2 (don't modify the palette!)
-		SetAPen(rp, 2);  // Use pen 2 as-is from existing palette
+		SetAPen(rp, 2);  // Green pen
 		isGreenBackground = TRUE;
 	}
 	
-	// Fill only the inner client area of the window (not borders/title bar)
-	// Start from the window's inner area and avoid the gadget area
+	/**
+	 * Redraw the window background color in the client 
+	 * area of the window, excluding borders and title bar.
+	 */
 	RectFill(rp, window->BorderLeft, window->BorderTop, 
 	         window->Width - window->BorderRight - 1, 
 	         window->Height - window->BorderBottom - 1);
 	
-	// Redraw the button background to maintain its orange color
+	// Re-draw the button background again
 	DrawButtonBackground(window);
 }
 
-
-
-// Function to create and manage Workbench window
-void WorkbenchMode() {
+/**
+ * Runs the program.
+ */
+void LaunchProgram() {
 	struct Window *window;
 	struct IntuiMessage *message;
 	struct NewWindow nw;
@@ -161,7 +171,7 @@ void WorkbenchMode() {
 					}
 					break;
 				case GADGETUP:
-					// Button was clicked! Change the window background color
+					// Button was clicked: Change the window background color
 					ChangeWindowBackground(window);
 					
 					// Update window title to reflect current state
@@ -175,24 +185,22 @@ void WorkbenchMode() {
 					// Redraw the window contents
 					BeginRefresh(window);
 					
-					// Restore the current background color in the client area only
+					// Restore the current background color
 					if (isGreenBackground) {
 						struct RastPort *rp = window->RPort;
-						// Use existing pen 2 (don't modify palette)
-						SetAPen(rp, 2);  // Green pen (pen 2 as-is)
+						SetAPen(rp, 2);
 						RectFill(rp, window->BorderLeft, window->BorderTop, 
 						         window->Width - window->BorderRight - 1, 
 						         window->Height - window->BorderBottom - 1);
 					} else {
 						struct RastPort *rp = window->RPort;
-						// Use blue pen (pen 1)
-						SetAPen(rp, 1);  // Blue pen
+						SetAPen(rp, 1);
 						RectFill(rp, window->BorderLeft, window->BorderTop, 
 						         window->Width - window->BorderRight - 1, 
 						         window->Height - window->BorderBottom - 1);
 					}
 					
-					DrawButtonBackground(window);  // Draw orange button background
+					DrawButtonBackground(window);
 					EndRefresh(window, TRUE);
 					break;
 			}
@@ -202,6 +210,8 @@ void WorkbenchMode() {
 	
 	CloseWindow(window);
 }
+
+// Made it to here
 
 int main() {
 	SysBase = *(struct ExecBase**)4;
@@ -224,12 +234,12 @@ int main() {
 		Exit(0);
 	}
 
-	WorkbenchMode();
+	LaunchProgram();
 
 	// Check if started from Workbench
 	// if (IsWorkbenchStartup()) {
 	// 	// Started from Workbench - create window
-	// 	WorkbenchMode();
+	// 	LaunchProgram();
 	// } else {
 	// 	// Started from CLI/Shell - console output
 	// 	Write(Output(), (APTR)"Hello console!\n", 15);
